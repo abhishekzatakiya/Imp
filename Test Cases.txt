@@ -1,0 +1,46 @@
+TC NO	Test Objective	Consolidation	Pre-requisite	Steps	TestData	Expected Output	Status	Remarks	Automation Testcase	Automation Status
+Headers										
+										
+TC_01	Check API request with valid ApiToken and Cluster headers	TC01	1. AS501 API available 2. Valid ApiToken available 3. Cluster configured as CL1_User	1. Add valid headers 2. Send POST /AS501 request	ApiToken=<valid_token> Cluster=CL1_User , Domain=URL	API request should be processed successfully	TBD	Happy Path Header Validation	AT_HDR_001	Pending
+TC_02	Check request rejection when ApiToken header is missing	TC01	API available; valid payload available	1. Remove ApiToken header 2. Send POST request	Missing ApiToken	API should reject request with authentication error	TBD	Mandatory Header Validation	AT_HDR_002	Pending
+TC_03	Check request rejection when Cluster header is missing	TC01	API available; valid payload available	1. Remove Cluster header 2. Send POST request	Missing Cluster	API should reject request	TBD	Mandatory Header Validation	AT_HDR_003	Pending
+TC_04	Check request with empty ApiToken value	TC02	API available	1. Pass blank ApiToken 2. Send request	ApiToken=""	API should reject request	TBD	Empty Header Validation	AT_HDR_004	Pending
+TC_05	Check request with empty Cluster value	TC02	API available	1. Pass blank Cluster 2. Send request	Cluster=""	API should reject request	TBD	Empty Header Validation	AT_HDR_005	Pending
+TC_06	Check request with invalid/expired ApiToken	TC03	API available	1. Pass invalid token 2. Send request	Invalid/expired token	API should return unauthorized error	TBD	Invalid Token Validation	AT_HDR_006	Pending
+TC_07	Check request with special characters in ApiToken	TC03	API available	1. Pass special characters in token 2. Send request	ApiToken=@#$%^	API should securely reject request	TBD	Security Validation	AT_HDR_007	Pending
+TC_08	Check ApiToken case sensitivity	TC03	API available	1. Change token case 2. Send request	Lowercase/uppercase token	API should validate correctly	TBD	Case Sensitivity	AT_HDR_008	Pending
+TC_09	Check request with invalid Cluster value	TC04	API available	1. Pass invalid Cluster 2. Send request	Cluster=CL2_User	API should reject request	TBD	Invalid Cluster Validation	AT_HDR_009	Pending
+TC_10	Check Cluster header case sensitivity	TC04	API available	1. Pass lowercase cluster 2. Send request	Cluster=cl1_user	API should validate cluster correctly	TBD	Case Sensitivity	AT_HDR_010	Pending
+TC_11	Check request with additional unsupported headers	TC05	API available	1. Add random custom headers 2. Send request	RandomHeader=test	API should ignore unsupported headers safely	TBD	Robustness Validation	AT_HDR_011	Pending
+TC_12	Check request without Content-Type header	TC05	API available	1. Remove Content-Type header 2. Send request	Missing Content-Type	API should reject request or handle correctly	TBD	Content-Type Validation	AT_HDR_012	Pending
+TC_13	Check request with invalid Content-Type	TC05	API available	1. Pass invalid Content-Type 2. Send request	Content-Type=text/plain	API should return unsupported media type error	TBD	Content-Type Validation	AT_HDR_013	Pending
+TC_14	Check request without Accept header	TC06	API available	1. Remove Accept header 2. Send request	Missing Accept header	API should handle request correctly	TBD	Accept Header Validation	AT_HDR_014	Pending
+TC_15	Check request with invalid Accept header	TC06	API available	1. Pass invalid Accept type 2. Send request	Accept=text/xml	API should return proper response/error	TBD	Accept Header Validation	AT_HDR_015	Pending
+TC_16	Check request with duplicate ApiToken headers	TC07	API available	1. Pass duplicate ApiToken headers 2. Send request	Two ApiToken headers	API should handle duplicate headers safely	TBD	Robustness Validation	AT_HDR_016	Pending
+TC_17	Check request with whitespace in ApiToken	TC07	API available	1. Add leading/trailing spaces in token 2. Send request	ApiToken=" token "	API should trim/reject correctly	TBD	Input Sanitization	AT_HDR_017	Pending
+TC_18	Check request with whitespace in Cluster header	TC07	API available	1. Add leading/trailing spaces in Cluster 2. Send request	Cluster=" CL1_User "	API should trim/reject correctly	TBD	Input Sanitization	AT_HDR_018	Pending
+TC_19	Check API request over HTTP instead of HTTPS	API accessible over HTTP	1. Send request using HTTP URL	http://...	API should enforce secure handling	TBD	Security Validation	AT_HDR_019	Pending	
+TC_20	Check API request with incorrect domain	TC08	API available	1. Send request to invalid domain	Wrong domain URL	Request should fail/unreachable	TBD	Domain Validation	AT_HDR_020	Pending
+
+
+
+
+Internal Case ID	Case Number	Title	TestScenario	TestSpecification	Status	TestType	Priority	Severity	Assignee	Preconditions	Test Data	Expected Result	Actual Result	Remarks	Comments	Feature	Tags	Jira Reference	Linked Requirements	Automation Required	Automation Status	Steps
+	TC-0000	User Login Verification	Standard login flow with valid credentials	Auth Test Specification	Draft	Manual	High	Major	Test User	User is on the login page	Username: testuser, Password: password123	User should be redirected to the dashboard	Pending	Sample Remarks	Sample Comment	Authentication	#smoke, #login	TEST-123	REQ-456, REQ-789	No	Not Required	Enter credentials : Login button becomes active | Click login : Progress loader shown | Redirection : Dashboard is visible
+Headers																						
+																						
+	TC-01	API Header Validation with Valid Domain ApiToken and Cluster	Validate successful API access using valid authentication and routing headers											Happy Flow								
+	TC-02	Validate API rejection with ApiToken	API Validation when Token is not Present											API Token not Present								
+	TC-03		API Validation when Api Token is Empty											API Token Empty								
+	TC-04		API Validation with Invalid ApiToken											API Token Invalid								
+	TC-05		API Validation with Expired ApiToken											API Token Expired								
+	TC-06		API Validation with Special Character In ApiToken											Special Character Present								
+	TC-07		APiI Validation with Leading And Trailing spaces											Extra Spaces								
+	TC-08	Validate API rejection when Cluster is not passed in header	API Validation when Cluster is not Present																			
+	TC-09		API Validation when Cluster is Empty																			
+	TC-10		API Validation with Invalid Cluster Value																			
+	TC-11		API Validation with Cluster Case Sensitivity																			
+	TC-12		API Validation with Cluster Having Leading and Trailing Spaces																			
+	TC-13	Validate API behavior with incorrect domain URL	API Validation with Invalid Domain																			
+	TC-14		API Validation when Domain Path is incorrect (end point is incorrect)																			
+	TC-15	Validate API with Protocol 	API Validation with HTTP Domain Instead of HTTPS																			
