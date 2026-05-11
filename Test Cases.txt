@@ -1,46 +1,1041 @@
-TC NO	Test Objective	Consolidation	Pre-requisite	Steps	TestData	Expected Output	Status	Remarks	Automation Testcase	Automation Status
-Headers										
-										
-TC_01	Check API request with valid ApiToken and Cluster headers	TC01	1. AS501 API available 2. Valid ApiToken available 3. Cluster configured as CL1_User	1. Add valid headers 2. Send POST /AS501 request	ApiToken=<valid_token> Cluster=CL1_User , Domain=URL	API request should be processed successfully	TBD	Happy Path Header Validation	AT_HDR_001	Pending
-TC_02	Check request rejection when ApiToken header is missing	TC01	API available; valid payload available	1. Remove ApiToken header 2. Send POST request	Missing ApiToken	API should reject request with authentication error	TBD	Mandatory Header Validation	AT_HDR_002	Pending
-TC_03	Check request rejection when Cluster header is missing	TC01	API available; valid payload available	1. Remove Cluster header 2. Send POST request	Missing Cluster	API should reject request	TBD	Mandatory Header Validation	AT_HDR_003	Pending
-TC_04	Check request with empty ApiToken value	TC02	API available	1. Pass blank ApiToken 2. Send request	ApiToken=""	API should reject request	TBD	Empty Header Validation	AT_HDR_004	Pending
-TC_05	Check request with empty Cluster value	TC02	API available	1. Pass blank Cluster 2. Send request	Cluster=""	API should reject request	TBD	Empty Header Validation	AT_HDR_005	Pending
-TC_06	Check request with invalid/expired ApiToken	TC03	API available	1. Pass invalid token 2. Send request	Invalid/expired token	API should return unauthorized error	TBD	Invalid Token Validation	AT_HDR_006	Pending
-TC_07	Check request with special characters in ApiToken	TC03	API available	1. Pass special characters in token 2. Send request	ApiToken=@#$%^	API should securely reject request	TBD	Security Validation	AT_HDR_007	Pending
-TC_08	Check ApiToken case sensitivity	TC03	API available	1. Change token case 2. Send request	Lowercase/uppercase token	API should validate correctly	TBD	Case Sensitivity	AT_HDR_008	Pending
-TC_09	Check request with invalid Cluster value	TC04	API available	1. Pass invalid Cluster 2. Send request	Cluster=CL2_User	API should reject request	TBD	Invalid Cluster Validation	AT_HDR_009	Pending
-TC_10	Check Cluster header case sensitivity	TC04	API available	1. Pass lowercase cluster 2. Send request	Cluster=cl1_user	API should validate cluster correctly	TBD	Case Sensitivity	AT_HDR_010	Pending
-TC_11	Check request with additional unsupported headers	TC05	API available	1. Add random custom headers 2. Send request	RandomHeader=test	API should ignore unsupported headers safely	TBD	Robustness Validation	AT_HDR_011	Pending
-TC_12	Check request without Content-Type header	TC05	API available	1. Remove Content-Type header 2. Send request	Missing Content-Type	API should reject request or handle correctly	TBD	Content-Type Validation	AT_HDR_012	Pending
-TC_13	Check request with invalid Content-Type	TC05	API available	1. Pass invalid Content-Type 2. Send request	Content-Type=text/plain	API should return unsupported media type error	TBD	Content-Type Validation	AT_HDR_013	Pending
-TC_14	Check request without Accept header	TC06	API available	1. Remove Accept header 2. Send request	Missing Accept header	API should handle request correctly	TBD	Accept Header Validation	AT_HDR_014	Pending
-TC_15	Check request with invalid Accept header	TC06	API available	1. Pass invalid Accept type 2. Send request	Accept=text/xml	API should return proper response/error	TBD	Accept Header Validation	AT_HDR_015	Pending
-TC_16	Check request with duplicate ApiToken headers	TC07	API available	1. Pass duplicate ApiToken headers 2. Send request	Two ApiToken headers	API should handle duplicate headers safely	TBD	Robustness Validation	AT_HDR_016	Pending
-TC_17	Check request with whitespace in ApiToken	TC07	API available	1. Add leading/trailing spaces in token 2. Send request	ApiToken=" token "	API should trim/reject correctly	TBD	Input Sanitization	AT_HDR_017	Pending
-TC_18	Check request with whitespace in Cluster header	TC07	API available	1. Add leading/trailing spaces in Cluster 2. Send request	Cluster=" CL1_User "	API should trim/reject correctly	TBD	Input Sanitization	AT_HDR_018	Pending
-TC_19	Check API request over HTTP instead of HTTPS	API accessible over HTTP	1. Send request using HTTP URL	http://...	API should enforce secure handling	TBD	Security Validation	AT_HDR_019	Pending	
-TC_20	Check API request with incorrect domain	TC08	API available	1. Send request to invalid domain	Wrong domain URL	Request should fail/unreachable	TBD	Domain Validation	AT_HDR_020	Pending
+Internal Case ID	Case Number	Title	TestScenario	TestSpecification	Status	TestType	Priority	Severity	Assignee	Preconditions	Test Data	Expected Result	Actual Result	Remarks	Comments	Feature	Tags	Jira Reference	Linked Requirements	Automation Required	Automation Status	Steps			
+	TC-0000	User Login Verification	Standard login flow with valid credentials	Auth Test Specification	Draft	Manual	High	Major	Test User	User is on the login page	Username: testuser, Password: password123	User should be redirected to the dashboard	Pending	Sample Remarks	Sample Comment	Authentication	#smoke, #login	TEST-123	REQ-456, REQ-789	No	Not Required	Enter credentials : Login button becomes active | Click login : Progress loader shown | Redirection : Dashboard is visible			
+Headers																									
+																									
+	TC-01	Validate API access with valid ApiToken, Cluster and Domain headers	Validate successful API access using valid authentication and routing headers	Header Validation		Manual	High	Major		"API server is up and valid token is available
 
+API token for AS501 Configuration must be present for API 
 
+Company map for the data give is ""TrackWizz"""	ApiToken=VALID_TOKEN_12345, Cluster=CL1_User, Domain=https://lxattt-ckyc-op.tssconsultancy.com/CustomerInfo/	"API should return HTTP 200/201 success response
 
+Input File :  TC-01.txt
 
-Internal Case ID	Case Number	Title	TestScenario	TestSpecification	Status	TestType	Priority	Severity	Assignee	Preconditions	Test Data	Expected Result	Actual Result	Remarks	Comments	Feature	Tags	Jira Reference	Linked Requirements	Automation Required	Automation Status	Steps
-	TC-0000	User Login Verification	Standard login flow with valid credentials	Auth Test Specification	Draft	Manual	High	Major	Test User	User is on the login page	Username: testuser, Password: password123	User should be redirected to the dashboard	Pending	Sample Remarks	Sample Comment	Authentication	#smoke, #login	TEST-123	REQ-456, REQ-789	No	Not Required	Enter credentials : Login button becomes active | Click login : Progress loader shown | Redirection : Dashboard is visible
-Headers																						
-																						
-	TC-01	API Header Validation with Valid Domain ApiToken and Cluster	Validate successful API access using valid authentication and routing headers											Happy Flow								
-	TC-02	Validate API rejection with ApiToken	API Validation when Token is not Present											API Token not Present								
-	TC-03		API Validation when Api Token is Empty											API Token Empty								
-	TC-04		API Validation with Invalid ApiToken											API Token Invalid								
-	TC-05		API Validation with Expired ApiToken											API Token Expired								
-	TC-06		API Validation with Special Character In ApiToken											Special Character Present								
-	TC-07		APiI Validation with Leading And Trailing spaces											Extra Spaces								
-	TC-08	Validate API rejection when Cluster is not passed in header	API Validation when Cluster is not Present																			
-	TC-09		API Validation when Cluster is Empty																			
-	TC-10		API Validation with Invalid Cluster Value																			
-	TC-11		API Validation with Cluster Case Sensitivity																			
-	TC-12		API Validation with Cluster Having Leading and Trailing Spaces																			
-	TC-13	Validate API behavior with incorrect domain URL	API Validation with Invalid Domain																			
-	TC-14		API Validation when Domain Path is incorrect (end point is incorrect)																			
-	TC-15	Validate API with Protocol 	API Validation with HTTP Domain Instead of HTTPS																			
+Output File :"	TBD	Happy Flow	Valid header validation	Authentication				Yes	Pending	1. Add valid ApiToken header 2. Add valid Cluster header 3. Use valid Domain URL 4. Send API request			
+	TC-02	Validate API rejection with ApiToken header's	API Validation when Token is not Present	Header Validation		Manual	High	Critical		API server is reachable	"ApiToken Header Missing 
+Remove ApiToken Form Headers "	"API should reject request with authentication error
+
+Output File : TC-02.txt"	TBD	API Token not Present	Missing token validation	Authentication				Yes	Pending	1. Remove ApiToken header 2. Send API request			
+	TC-03		API Validation when Api Token is Empty	Header Validation		Manual	High	Major		API server is reachable	ApiToken=""	"API should reject empty token value 
+
+Output File : TC-03.txt"	TBD	API Token Empty	Empty token validation	Authentication				Yes	Pending	1. Pass blank ApiToken value 2. Send API request			
+	TC-04		API Validation with Invalid ApiToken	Header Validation		Manual	High	Critical		API server is reachable	ApiToken=INVALID_TOKEN_001	"API should return unauthorized/invalid token error
+
+Output File : TC-04.txt"	TBD	API Token Invalid	Invalid token validation	Authentication				Yes	Pending	1. Pass invalid ApiToken 2. Send API request			
+	TC-05		API Validation with Expired ApiToken	Header Validation		Manual	High	Critical		Expired token should be available	ApiToken=EXPIRED_TOKEN_001	API should reject expired token	TBD	API Token Expired	Expired token validation	Authentication				Yes	Pending	1. Pass expired ApiToken 2. Send API request			
+	TC-06		API Validation with Special Character In ApiToken	Header Validation		Manual	Medium	Major		API server is reachable	ApiToken=@#$%^TOKEN	"API should reject malformed token 
+
+Output File : TC-06.txt"	TBD	Special Character Present	Special character validation	Authentication				Yes	Pending	1. Pass ApiToken with special characters 2. Send API request			
+	TC-07		APiI Validation with Leading And Trailing spaces	Header Validation		Manual	Medium	Minor		API server is reachable	ApiToken=" VALID_TOKEN_12345 "	"API should trim or reject token
+
+Output File : TC-07.txt"	TBD	Extra Spaces	Space validation	Authentication				Yes	Pending	1. Pass ApiToken with leading/trailing spaces 2. Send API request			
+	TC-08	Validate API rejection when Cluster in header's	API Validation when Cluster is not Present	Header Validation		Manual	High	Critical		Valid token should be available	Cluster Header Missing	"Clusternotfoundintherequestheaders 
+
+Output File : TC-08.txt"	TBD	Cluster Missing	Missing cluster validation	Routing				Yes	Pending	1. Remove Cluster header 2. Send API request			
+	TC-09		API Validation when Cluster is Empty	Header Validation		Manual	High	Major		API server is reachable	Cluster=""	"ProvidedClusterisnotpresentinClusterEnum
+
+Output File : TC-09.txt"	TBD	Cluster Empty	Empty cluster validation	Routing				Yes	Pending	1. Pass empty Cluster value 2. Send API request			
+	TC-10		API Validation with Invalid Cluster Value	Header Validation		Manual	High	Major		API server is reachable	Cluster=CL2_User2	"ProvidedClusterisnotpresentinClusterEnum
+
+Output File : TC-10.txt"	TBD	Invalid Cluster	Invalid cluster validation	Routing				Yes	Pending	1. Pass invalid Cluster value 2. Send API request			
+	TC-11		API Validation with Cluster Case Sensitivity	Header Validation		Manual	Medium	Minor		API server is reachable	Cluster=cl1_user	"ProvidedClusterisnotpresentinClusterEnum
+
+Output File : TC-11.txt"	TBD	Case Sensitivity	Cluster case validation	Routing				Yes	Pending	1. Pass lowercase Cluster value 2. Send API request			
+	TC-12		API Validation with Cluster Having Leading and Trailing Spaces	Header Validation		Manual	Medium	Minor		API server is reachable	Cluster=" CL2_User "	"ProvidedClusterisnotpresentinClusterEnum
+
+Output File : TC-12.txt"	TBD	Extra Spaces	Cluster space validation	Routing				Yes	Pending	1. Pass Cluster value with spaces 2. Send API request			
+	TC-13	Validate API behavior with incorrect domain URL	API Validation with Invalid Domain	Header Validation		Manual	High	Critical		API endpoint should be accessible	Domain=https://invalid-domain.com/CustomerInfo/	"API request should fail due to invalid domain
+
+Output File : TC-13.txt"	TBD	Invalid Domain	Invalid domain validation	Routing				Yes	Pending	1. Use invalid domain URL 2. Send API request			
+	TC-14		API Validation when Domain Path is incorrect (end point is incorrect)	Header Validation		Manual	High	Major		API server is reachable	Domain=https://lxattt-ckyc-op.tssconsultancy.com/Customerinfo/AS504	"API should return endpoint/path error
+
+Output File : TC-14.txt"	TBD	Invalid Endpoint	Endpoint validation	Routing				Yes	Pending	1. Use incorrect endpoint path 2. Send API request			
+	TC-15	Validate API with Protocol	API Validation with HTTP Domain Instead of HTTPS	Header Validation		Manual	Medium	Major		API server is reachable	Domain=http://lxattt-ckyc-op.tssconsultancy.com/CustomerInfo/	"API should reject insecure HTTP protocol
+
+Output File : TC-15.txt"	TBD	HTTP Instead of HTTPS	Protocol validation	Security				Yes	Pending	1. Use HTTP URL instead of HTTPS 2. Send API request			
+	TC-16	Validate API with unsupported headers	API Calidation with unsupported Headers	Header Validation		Manual	Low	Minor		API server is reachable	UnsupportedHeader=TEST_HEADER	"API should ignore or reject unsupported header
+
+Output File : TC-16.txt"	TBD	Unsupported Header	Unsupported header validation	Headers				Yes	Pending	1. Add unsupported header 2. Send API request			
+	TC-17	Validate API with content-type is missing	API Validation with invalid content-type	Header Validation		Manual	High	Major		API server is reachable	"Content-Type Header Missing 
+Remove Content-type from header"	"API should reject request with invalid content-type error
+
+Output File : TC-17.txt"	TBD	Missing Content-Type	Content type validation	Headers				Yes	Pending	1. Remove Content-Type header 2. Send API request			
+																									
+																									
+																									
+Fields 																									
+																									
+	TC-18	Validation For RequestID	API validation when requestId is valid	Request Field Validation		Manual	High	Major		API is up and valid headers are available	requestId=REQ20260509001	Request accepted / success response	TBD	Happy Flow		Request Validation				Yes	Pending	1. Prepare valid payload 2. Add valid requestId 3. Send POST request 4. Verify success response			
+	TC-19		API validation when requestId is not present	Request Field Validation		Manual	High	Critical		API is up and valid headers are available	Remove requestId from body	Request rejected	TBD	requestId Missing		Request Validation				Yes	Pending	1. Prepare payload without requestId 2. Send POST request 3. Verify rejection response			
+	TC-20		API validation when requestId is blank	Request Field Validation		Manual	High	Major		API is up and valid headers are available	requestId=""	Request rejected	TBD	requestId Empty		Request Validation				Yes	Pending	1. Prepare payload with blank requestId 2. Send POST request 3. Verify validation error			
+	TC-21		API validation when same requestId is sent twice	Request Field Validation		Manual	High	Critical		Existing requestId already processed	Same requestId used in two requests	Duplicate request rejected	TBD	Duplicate requestId		Request Validation				Yes	Pending	1. Send first request 2. Re-send same requestId 3. Verify duplicate rejection			
+	TC-22		API validation when requestId contains special chars	Request Field Validation		Manual	Medium	Major		API is up and valid headers are available	requestId="REQ@#123"	Request rejected	TBD	Special Character Present		Request Validation				Yes	Pending	1. Prepare payload with special chars 2. Send POST request 3. Verify rejection			
+	TC-23		API validation with extremely long requestId	Request Field Validation		Manual	Medium	Major		API is up and valid headers are available	requestId="REQ123456789012345678901234567890"	Request rejected / max length validation	TBD	Max Boundary		Request Validation				Yes	Pending	1. Prepare payload with long requestId 2. Send POST request 3. Verify validation message			
+	TC-24	Validate sourceSystemName with registered value	API validation when sourceSystemName is valid	Request Field Validation		Manual	High	Major		API is up and valid headers are available	sourceSystemName="Finacle"	Request accepted	TBD	Happy Flow		Request Validation				Yes	Pending	1. Prepare payload with valid sourceSystemName 2. Send POST request 3. Verify success response			
+	TC-25		API validation when sourceSystemName is not registered	Request Field Validation		Manual	High	Critical		API is up and valid headers are available	sourceSystemName="UnknownSystem"	MRV rejection / response null	TBD	Invalid Source System		Request Validation				Yes	Pending	1. Prepare payload with invalid sourceSystemName 2. Send POST request 3. Verify MRV rejection			
+	TC-26		API validation when sourceSystemName is not present	Request Field Validation		Manual	High	Critical		API is up and valid headers are available	Remove sourceSystemName from body	validationCode=MRV10	TBD	sourceSystemName Missing		Request Validation				Yes	Pending	1. Remove sourceSystemName 2. Send POST request 3. Verify MRV10 validation			
+	TC-27		API validation when sourceSystemName is blank	Request Field Validation		Manual	Medium	Major		API is up and valid headers are available	sourceSystemName=""	Request rejected	TBD	sourceSystemName Empty		Request Validation				Yes	Pending	1. Add blank sourceSystemName 2. Send POST request 3. Verify rejection			
+	TC-28		API validation with lowercase sourceSystemName	Request Field Validation		Manual	Medium	Major		API is up and valid headers are available	sourceSystemName="finacle"	Request rejected / MRV rejection	TBD	Case Sensitivity		Request Validation				Yes	Pending	1. Add lowercase sourceSystemName 2. Send POST request 3. Verify validation			
+	TC-29		API validation when sourceSystemName contains spaces	Request Field Validation		Manual	Medium	Minor		API is up and valid headers are available	sourceSystemName=" Finacle "	Request rejected / trim validation	TBD	Spaces Present		Request Validation				Yes	Pending	1. Add leading/trailing spaces 2. Send POST request 3. Verify response			
+	TC-30	Validate purpose with valid value	API validation when purpose is valid	Request Field Validation		Manual	High	Major		API is up and valid headers are available	purpose="09"	Request accepted	TBD	Happy Flow		Request Validation				Yes	Pending	1. Add valid purpose 2. Send POST request 3. Verify success response			
+	TC-31		API validation when purpose is not present	Request Field Validation		Manual	High	Critical		API is up and valid headers are available	Remove purpose from body	Request rejected	TBD	purpose Missing		Request Validation				Yes	Pending	1. Remove purpose 2. Send POST request 3. Verify rejection			
+	TC-32		API validation when purpose value is invalid	Request Field Validation		Manual	Medium	Major		API is up and valid headers are available	purpose="08"	Request rejected	TBD	Invalid purpose		Request Validation				Yes	Pending	1. Add invalid purpose 08 2. Send POST request 3. Verify rejection			
+	TC-33		API validation when purpose value is invalid	Request Field Validation		Manual	Medium	Major		API is up and valid headers are available	purpose="10"	Request rejected	TBD	Invalid purpose		Request Validation				Yes	Pending	1. Add invalid purpose 10 2. Send POST request 3. Verify rejection			
+	TC-34		API validation when purpose is sent as number	Request Field Validation		Manual	Medium	Major		API is up and valid headers are available	purpose=9	Request rejected	TBD	Data Type Validation		Request Validation				Yes	Pending	1. Send purpose as numeric value 2. Verify validation response			
+	TC-35		API validation when purpose is blank	Request Field Validation		Manual	Medium	Major		API is up and valid headers are available	purpose=""	Request rejected	TBD	purpose Empty		Request Validation				Yes	Pending	1. Add blank purpose 2. Send POST request 3. Verify validation			
+	TC-36		API validation when purpose is null	Request Field Validation		Manual	Medium	Major		API is up and valid headers are available	purpose=null	Request rejected	TBD	Null Value		Request Validation				Yes	Pending	1. Add null purpose 2. Send POST request 3. Verify rejection			
+	TC-37	Validate constitutionType with valid Individual code 1	API validation when constitutionType is valid	Identity & Name Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	constitutionType=1	Request accepted	TBD	Happy Flow		Identity Validation	#constitutionType #positive		REQ-AS501-020	Yes	Pending	1. Add constitutionType=1 2. Send POST request 3. Verify success response			
+	TC-38	Validate constitutionType with valid Individual code 5	API validation with constitutionType value 5	Identity & Name Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	constitutionType=5	Request accepted	TBD	Happy Flow		Identity Validation	#constitutionType #positive		REQ-AS501-021	Yes	Pending	1. Add constitutionType=5 2. Send POST request 3. Verify success response			
+	TC-39	Validate constitutionType with valid Individual code 7	API validation with constitutionType value 7	Identity & Name Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	constitutionType=7	Request accepted	TBD	Happy Flow		Identity Validation	#constitutionType #positive		REQ-AS501-022	Yes	Pending	1. Add constitutionType=7 2. Send POST request 3. Verify success response			
+	TC-40	Validate constitutionType with valid Individual code 27	API validation with constitutionType value 27	Identity & Name Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	constitutionType=27	Request accepted	TBD	Happy Flow		Identity Validation	#constitutionType #positive		REQ-AS501-023	Yes	Pending	1. Add constitutionType=27 2. Send POST request 3. Verify success response			
+	TC-41	Validate constitutionType with valid LE code	API validation with valid LE constitutionType	Identity & Name Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	constitutionType=31	Request accepted	TBD	LE Happy Flow		Identity Validation	#constitutionType #LE		REQ-AS501-024	Yes	Pending	1. Add valid LE code 2. Send POST request 3. Verify success response			
+	TC-42	Validate constitutionType with invalid code	API validation when invalid constitutionType is passed	Identity & Name Field Validation	Draft	Manual	High	Critical	QA Team	API is up and valid headers are available	constitutionType=999	Request rejected	TBD	Invalid Code		Identity Validation	#constitutionType #negative		REQ-AS501-025	Yes	Pending	1. Add invalid constitutionType 2. Send POST request 3. Verify rejection			
+	TC-43	Validate constitutionType when missing	API validation when constitutionType is absent	Identity & Name Field Validation	Draft	Manual	High	Critical	QA Team	API is up and valid headers are available	Remove constitutionType	Request rejected	TBD	constitutionType Missing		Identity Validation	#constitutionType #negative		REQ-AS501-026	Yes	Pending	1. Remove constitutionType 2. Send POST request 3. Verify rejection			
+	TC-44	Validate constitutionType when empty	API validation when constitutionType is blank	Identity & Name Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	constitutionType=""	Request rejected	TBD	constitutionType Empty		Identity Validation	#constitutionType #negative		REQ-AS501-027	Yes	Pending	1. Add blank constitutionType 2. Send POST request 3. Verify validation			
+	TC-45	Validate constitutionType string vs numeric	API validation for datatype mismatch	Identity & Name Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	constitutionType="1"	Validation based on datatype rules	TBD	Datatype Validation		Identity Validation	#constitutionType #datatype		REQ-AS501-028	Yes	Pending	1. Send string value instead of numeric 2. Verify response			
+	TC-46	Validate status with Active value	API validation when status is Active	Identity & Name Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	status="Active"	Request accepted	TBD	Happy Flow		Identity Validation	#status #positive		REQ-AS501-029	Yes	Pending	1. Add Active status 2. Send POST request 3. Verify success response			
+	TC-47	Validate status with Closed value	API validation when status is Closed	Identity & Name Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	status="Closed"	Request accepted	TBD	Happy Flow		Identity Validation	#status #positive		REQ-AS501-030	Yes	Pending	1. Add Closed status 2. Send POST request 3. Verify success response			
+	TC-48	Validate status with Dormant value	API validation when status is Dormant	Identity & Name Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	status="Dormant"	Request accepted	TBD	Happy Flow		Identity Validation	#status #positive		REQ-AS501-031	Yes	Pending	1. Add Dormant status 2. Send POST request 3. Verify success response			
+	TC-49	Validate status with InActive value	API validation when status is InActive	Identity & Name Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	status="InActive"	Request accepted	TBD	Happy Flow		Identity Validation	#status #positive		REQ-AS501-032	Yes	Pending	1. Add InActive status 2. Send POST request 3. Verify success response			
+	TC-50	Validate status with Suspended value	API validation when status is Suspended	Identity & Name Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	status="Suspended"	Request accepted	TBD	Happy Flow		Identity Validation	#status #positive		REQ-AS501-033	Yes	Pending	1. Add Suspended status 2. Send POST request 3. Verify success response			
+	TC-51	Validate status with invalid value	API validation when invalid status is passed	Identity & Name Field Validation	Draft	Manual	High	Critical	QA Team	API is up and valid headers are available	status="Blocked"	Request rejected	TBD	Invalid Status		Identity Validation	#status #negative		REQ-AS501-034	Yes	Pending	1. Add invalid status 2. Send POST request 3. Verify rejection			
+	TC-52	Validate status case sensitivity	API validation with lowercase status	Identity & Name Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	status="active"	Validation based on enum rules	TBD	Case Sensitivity		Identity Validation	#status #caseSensitive		REQ-AS501-035	Yes	Pending	1. Add lowercase status 2. Send POST request 3. Verify validation			
+	TC-53	Validate prefix with Mr	API validation when prefix is Mr	Identity & Name Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	prefix="Mr"	Request accepted	TBD	Happy Flow		Identity Validation	#prefix #positive		REQ-AS501-036	Yes	Pending	1. Add prefix Mr 2. Send POST request 3. Verify success response			
+	TC-54	Validate prefix with Ms	API validation when prefix is Ms	Identity & Name Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	prefix="Ms"	Request accepted	TBD	Happy Flow		Identity Validation	#prefix #positive		REQ-AS501-037	Yes	Pending	1. Add prefix Ms 2. Send POST request 3. Verify success response			
+	TC-55	Validate prefix with Mrs	API validation when prefix is Mrs	Identity & Name Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	prefix="Mrs"	Request accepted	TBD	Happy Flow		Identity Validation	#prefix #positive		REQ-AS501-038	Yes	Pending	1. Add prefix Mrs 2. Send POST request 3. Verify success response			
+	TC-56	Validate prefix with invalid value	API validation when invalid prefix is passed	Identity & Name Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	prefix="Sir"	Request rejected	TBD	Invalid Prefix		Identity Validation	#prefix #negative		REQ-AS501-039	Yes	Pending	1. Add invalid prefix 2. Send POST request 3. Verify rejection			
+	TC-57	Validate prefix case sensitivity	API validation with lowercase prefix	Identity & Name Field Validation	Draft	Manual	Medium	Minor	QA Team	API is up and valid headers are available	prefix="mr"	Validation based on enum rules	TBD	Case Sensitivity		Identity Validation	#prefix #caseSensitive		REQ-AS501-040	Yes	Pending	1. Add lowercase prefix 2. Send POST request 3. Verify response			
+	TC-58	Validate firstName with standard value	API validation when firstName is standard	Identity & Name Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	firstName="Rahul"	Request accepted	TBD	Happy Flow		Identity Validation	#firstName #positive		REQ-AS501-041	Yes	Pending	1. Add valid firstName 2. Send POST request 3. Verify success response			
+	TC-59	Validate firstName with single character	API validation with one character name	Identity & Name Field Validation	Draft	Manual	Medium	Minor	QA Team	API is up and valid headers are available	firstName="R"	Request accepted	TBD	Boundary Validation		Identity Validation	#firstName #boundary		REQ-AS501-042	Yes	Pending	1. Add single character name 2. Send POST request 3. Verify response			
+	TC-60	Validate firstName with max boundary	API validation with 50 character name	Identity & Name Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	firstName="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"	Request accepted	TBD	Max Boundary		Identity Validation	#firstName #boundary		REQ-AS501-043	Yes	Pending	1. Add 50-char firstName 2. Send POST request 3. Verify response			
+	TC-61	Validate firstName over max boundary	API validation with 51 character name	Identity & Name Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	firstName="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"	Request rejected	TBD	Boundary Validation		Identity Validation	#firstName #boundary		REQ-AS501-044	Yes	Pending	1. Add 51-char firstName 2. Send POST request 3. Verify rejection			
+	TC-62	Validate firstName with numeric characters	API validation when firstName contains numbers	Identity & Name Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	firstName="Rahul123"	Request rejected	TBD	Invalid Characters		Identity Validation	#firstName #negative		REQ-AS501-045	Yes	Pending	1. Add numeric firstName 2. Send POST request 3. Verify rejection			
+	TC-63	Validate firstName with special characters	API validation when firstName contains special chars	Identity & Name Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	firstName="Rahul@#"	Request rejected	TBD	Invalid Characters		Identity Validation	#firstName #negative		REQ-AS501-046	Yes	Pending	1. Add special chars in firstName 2. Send POST request 3. Verify rejection			
+	TC-64	Validate firstName with only spaces	API validation when firstName contains spaces only	Identity & Name Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	firstName=" "	Request rejected	TBD	Spaces Only		Identity Validation	#firstName #negative		REQ-AS501-047	Yes	Pending	1. Add spaces only 2. Send POST request 3. Verify validation			
+	TC-65	Validate firstName when missing	API validation when firstName is absent	Identity & Name Field Validation	Draft	Manual	High	Critical	QA Team	API is up and valid headers are available	Remove firstName	Request rejected	TBD	firstName Missing		Identity Validation	#firstName #negative		REQ-AS501-048	Yes	Pending	1. Remove firstName 2. Send POST request 3. Verify rejection			
+	TC-66	Validate effectiveDate with valid format	API validation when effectiveDate is valid	Date Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	effectiveDate="01-Jan-2025"	Request accepted	TBD	Happy Flow		Date Validation	#effectiveDate #positive		REQ-AS501-049	Yes	Pending	1. Add valid effectiveDate 2. Send POST request 3. Verify success response			
+	TC-67	Validate effectiveDate with alternate slash format	API validation with DD/MMM/YYYY format	Date Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	effectiveDate="01/Jan/2025"	Request rejected / format validation	TBD	Invalid Format		Date Validation	#effectiveDate #format		REQ-AS501-050	Yes	Pending	1. Add slash format date 2. Send POST request 3. Verify validation			
+	TC-68	Validate effectiveDate with DD-MM-YYYY format	API validation with numeric month format	Date Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	effectiveDate="01-01-2025"	Format error expected	TBD	Format Error		Date Validation	#effectiveDate #negative		REQ-AS501-051	Yes	Pending	1. Add DD-MM-YYYY date 2. Send POST request 3. Verify format error			
+	TC-69	Validate effectiveDate with future date	API validation when effectiveDate is future date	Date Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	effectiveDate="01-Jan-2030"	Validation based on business rule	TBD	Future Date		Date Validation	#effectiveDate #futuredate		REQ-AS501-052	Yes	Pending	1. Add future effectiveDate 2. Send POST request 3. Verify response			
+	TC-70	Validate effectiveDate with valid leap year date	API validation with valid leap year date	Date Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	effectiveDate="29-Feb-2024"	Request accepted	TBD	Leap Year Valid		Date Validation	#effectiveDate #leapyear		REQ-AS501-053	Yes	Pending	1. Add 29-Feb-2024 2. Send POST request 3. Verify success response			
+	TC-71	Validate effectiveDate with invalid leap year date	API validation with invalid leap year date	Date Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	effectiveDate="29-Feb-2023"	Request rejected	TBD	Leap Year Invalid		Date Validation	#effectiveDate #leapyear		REQ-AS501-054	Yes	Pending	1. Add 29-Feb-2023 2. Send POST request 3. Verify rejection			
+	TC-72	Validate effectiveDate with invalid day	API validation when date day is invalid	Date Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	effectiveDate="32-Jan-2025"	Request rejected	TBD	Invalid Day		Date Validation	#effectiveDate #negative		REQ-AS501-055	Yes	Pending	1. Add invalid day 2. Send POST request 3. Verify validation			
+	TC-73	Validate effectiveDate with invalid month	API validation when month is invalid	Date Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	effectiveDate="01-ABC-2025"	Request rejected	TBD	Invalid Month		Date Validation	#effectiveDate #negative		REQ-AS501-056	Yes	Pending	1. Add invalid month 2. Send POST request 3. Verify rejection			
+	TC-74	Validate effectiveDate when missing	API validation when effectiveDate is absent	Date Field Validation	Draft	Manual	High	Critical	QA Team	API is up and valid headers are available	Remove effectiveDate	Request rejected	TBD	effectiveDate Missing		Date Validation	#effectiveDate #negative		REQ-AS501-057	Yes	Pending	1. Remove effectiveDate 2. Send POST request 3. Verify rejection			
+	TC-75	Validate dateOfBirth with valid DOB	API validation when DOB is valid	Date Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	dateOfBirth="01-Jan-1995"	Request accepted	TBD	Happy Flow		Date Validation	#dateOfBirth #positive		REQ-AS501-058	Yes	Pending	1. Add valid DOB 2. Send POST request 3. Verify success response			
+	TC-76	Validate dateOfBirth with future DOB	API validation when DOB is future date	Date Field Validation	Draft	Manual	High	Critical	QA Team	API is up and valid headers are available	dateOfBirth="01-Jan-2030"	Request rejected	TBD	Future DOB		Date Validation	#dateOfBirth #negative		REQ-AS501-059	Yes	Pending	1. Add future DOB 2. Send POST request 3. Verify rejection			
+	TC-77	Validate dateOfBirth for newborn age 0	API validation when DOB makes age 0	Date Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	dateOfBirth="<today date>"	Validation based on business rule	TBD	Boundary Age 0		Date Validation	#dateOfBirth #boundary		REQ-AS501-060	Yes	Pending	1. Add DOB as today 2. Send POST request 3. Verify response			
+	TC-78	Validate dateOfBirth for age 150	API validation when DOB makes customer age 150	Date Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	dateOfBirth="01-Jan-1875"	Request rejected / impossible age	TBD	Age Boundary		Date Validation	#dateOfBirth #boundary		REQ-AS501-061	Yes	Pending	1. Add DOB with age 150 2. Send POST request 3. Verify rejection			
+	TC-79	Validate dateOfBirth same as today	API validation when DOB equals current date	Date Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	dateOfBirth="09-May-2026"	Validation based on business rule	TBD	DOB Today		Date Validation	#dateOfBirth #today		REQ-AS501-062	Yes	Pending	1. Add DOB as today 2. Send POST request 3. Verify response			
+	TC-80	Validate DOB inconsistent with minor flag	API validation when DOB does not match minor flag	Date Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	dateOfBirth="01-Jan-1995", minor="1"	Request rejected / domain conflict	TBD	Domain Conflict		Date Validation	#dateOfBirth #minorFlag		REQ-AS501-063	Yes	Pending	1. Add adult DOB with minor=1 2. Send POST request 3. Verify conflict validation			
+	TC-81	Validate kycVerificationDate before declaration date	API validation for logical date inconsistency	Date Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	kycDateOfDeclaration="10-Jan-2025", kycVerificationDate="09-Jan-2025"	Request rejected / behavior validation	TBD	Logical Inconsistency		Date Validation	#kycDate #negative		REQ-AS501-064	Yes	Pending	1. Add verification date before declaration date 2. Send POST request 3. Verify response			
+	TC-82	Validate both KYC dates as future dates	API validation when both KYC dates are future	Date Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	kycDateOfDeclaration="01-Jan-2030", kycVerificationDate="02-Jan-2030"	Request rejected / behavior validation	TBD	Future KYC Dates		Date Validation	#kycDate #futuredate		REQ-AS501-065	Yes	Pending	1. Add both future KYC dates 2. Send POST request 3. Verify response			
+	TC-83	Validate declaration date before DOB	API validation when declaration date is before customer DOB	Date Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	dateOfBirth="01-Jan-1995", kycDateOfDeclaration="01-Jan-1990"	Request rejected / logical validation	TBD	Declaration Before DOB		Date Validation	#kycDate #dateOfBirth		REQ-AS501-066	Yes	Pending	1. Add declaration date before DOB 2. Send POST request 3. Verify rejection			
+	TC-84	Validate permanentAddressCountry with IND	API validation when country code is IND	Address Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	permanentAddressCountry="IND"	Request accepted	TBD	Happy Flow		Address Validation	#country #positive		REQ-AS501-067	Yes	Pending	1. Add IND country 2. Send POST request 3. Verify success response			
+	TC-85	Validate permanentAddressCountry with valid ISO code	API validation with valid 3-letter ISO country code	Address Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	permanentAddressCountry="USA"	Request accepted / as per rule	TBD	Valid ISO Code		Address Validation	#country #iso		REQ-AS501-068	Yes	Pending	1. Add valid ISO country 2. Send POST request 3. Verify response			
+	TC-86	Validate permanentAddressCountry with invalid code	API validation when country code is invalid	Address Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	permanentAddressCountry="XYZ"	Request rejected	TBD	Invalid Country		Address Validation	#country #negative		REQ-AS501-069	Yes	Pending	1. Add invalid country 2. Send POST request 3. Verify rejection			
+	TC-87	Validate permanentAddressCountry with 2-digit code	API validation when Alpha-2 code is passed	Address Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	permanentAddressCountry="IN"	Request rejected	TBD	Wrong Format		Address Validation	#country #format		REQ-AS501-070	Yes	Pending	1. Add 2-letter country code 2. Send POST request 3. Verify format validation			
+	TC-88	Validate permanentAddressCountry when missing	API validation when country is absent	Address Field Validation	Draft	Manual	High	Critical	QA Team	API is up and valid headers are available	Remove permanentAddressCountry	Request rejected	TBD	Country Missing		Address Validation	#country #negative		REQ-AS501-071	Yes	Pending	1. Remove country 2. Send POST request 3. Verify rejection			
+	TC-89	Validate permanentAddressZipCode with valid PIN	API validation with valid 6-digit PIN	Address Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	permanentAddressZipCode="400001"	Request accepted	TBD	Happy Flow		Address Validation	#zipcode #positive		REQ-AS501-072	Yes	Pending	1. Add valid PIN 2. Send POST request 3. Verify success response			
+	TC-90	Validate permanentAddressZipCode with 10-char max	API validation with max length ZIP	Address Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	permanentAddressZipCode="1234567890"	Request accepted / as per rule	TBD	Max Boundary		Address Validation	#zipcode #boundary		REQ-AS501-073	Yes	Pending	1. Add 10-char ZIP 2. Send POST request 3. Verify response			
+	TC-91	Validate permanentAddressZipCode with 11-char value	API validation when ZIP exceeds max length	Address Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	permanentAddressZipCode="12345678901"	Request rejected	TBD	Over Boundary		Address Validation	#zipcode #boundary		REQ-AS501-074	Yes	Pending	1. Add 11-char ZIP 2. Send POST request 3. Verify rejection			
+	TC-92	Validate permanentAddressZipCode with alphanumeric PIN	API validation when PIN contains letters	Address Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	permanentAddressZipCode="40A001"	Request rejected	TBD	Invalid PIN		Address Validation	#zipcode #negative		REQ-AS501-075	Yes	Pending	1. Add alphanumeric PIN 2. Send POST request 3. Verify rejection			
+	TC-93	Validate permanentAddressZipCode with all zeros	API validation when PIN is all zeros	Address Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	permanentAddressZipCode="000000"	Request rejected / behavior validation	TBD	Invalid PIN		Address Validation	#zipcode #negative		REQ-AS501-076	Yes	Pending	1. Add 000000 PIN 2. Send POST request 3. Verify response			
+	TC-94	Validate permanentAddressLine1 with valid text	API validation with valid address line1	Address Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	permanentAddressLine1="12 MG Road"	Request accepted	TBD	Happy Flow		Address Validation	#addressLine1 #positive		REQ-AS501-077	Yes	Pending	1. Add valid Line1 2. Send POST request 3. Verify success response			
+	TC-95	Validate permanentAddressLine1 with 55 characters	API validation with Line1 max boundary	Address Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	permanentAddressLine1="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"	Request accepted	TBD	Max Boundary		Address Validation	#addressLine1 #boundary		REQ-AS501-078	Yes	Pending	1. Add 55-char Line1 2. Send POST request 3. Verify response			
+	TC-96	Validate permanentAddressLine1 with 56 characters	API validation when Line1 exceeds max length	Address Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	permanentAddressLine1="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"	Request rejected	TBD	Over Boundary		Address Validation	#addressLine1 #boundary		REQ-AS501-079	Yes	Pending	1. Add 56-char Line1 2. Send POST request 3. Verify rejection			
+	TC-97	Validate permanentAddressLine1 with special characters	API validation with allowed address special chars	Address Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	permanentAddressLine1="A-12, Wing/B #5"	Request accepted / as per rule	TBD	Special Characters		Address Validation	#addressLine1 #specialchars		REQ-AS501-080	Yes	Pending	1. Add special chars in Line1 2. Send POST request 3. Verify response			
+	TC-98	Validate permanentAddressLine1 with only spaces	API validation when Line1 has spaces only	Address Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	permanentAddressLine1=" "	Request rejected	TBD	Spaces Only		Address Validation	#addressLine1 #negative		REQ-AS501-081	Yes	Pending	1. Add spaces only 2. Send POST request 3. Verify rejection			
+	TC-99	Validate permanentAddressLine1 when missing	API validation when Line1 is absent	Address Field Validation	Draft	Manual	High	Critical	QA Team	API is up and valid headers are available	Remove permanentAddressLine1	Request rejected	TBD	Line1 Missing		Address Validation	#addressLine1 #negative		REQ-AS501-082	Yes	Pending	1. Remove Line1 2. Send POST request 3. Verify rejection			
+	TC-100	Validate permanentAddressLine2 with valid text	API validation with valid Line2	Address Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	permanentAddressLine2="Near City Mall"	Request accepted	TBD	Happy Flow		Address Validation	#addressLine2 #positive		REQ-AS501-083	Yes	Pending	1. Add valid Line2 2. Send POST request 3. Verify response			
+	TC-101	Validate permanentAddressLine2 over boundary	API validation when Line2 exceeds max length	Address Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	56-character Line2 value	Request rejected	TBD	Over Boundary		Address Validation	#addressLine2 #boundary		REQ-AS501-084	Yes	Pending	1. Add 56-char Line2 2. Send POST request 3. Verify rejection			
+	TC-102	Validate permanentAddressLine3 with valid text	API validation with valid Line3	Address Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	permanentAddressLine3="Mumbai Maharashtra"	Request accepted	TBD	Happy Flow		Address Validation	#addressLine3 #positive		REQ-AS501-085	Yes	Pending	1. Add valid Line3 2. Send POST request 3. Verify response			
+	TC-103	Validate permanentAddressLine3 over boundary	API validation when Line3 exceeds max length	Address Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	56-character Line3 value	Request rejected	TBD	Over Boundary		Address Validation	#addressLine3 #boundary		REQ-AS501-086	Yes	Pending	1. Add 56-char Line3 2. Send POST request 3. Verify rejection			
+	TC-104	Validate permanentAddressState with Maharashtra	API validation with valid state code	Address Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	permanentAddressState="MH"	Request accepted	TBD	Happy Flow		Address Validation	#state #positive		REQ-AS501-087	Yes	Pending	1. Add valid state MH 2. Send POST request 3. Verify success response			
+	TC-105	Validate permanentAddressState with Telangana	API validation with post-bifurcation state	Address Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	permanentAddressState="TS"	Request accepted	TBD	Telangana State		Address Validation	#state #geographic		REQ-AS501-088	Yes	Pending	1. Add TS state 2. Send POST request 3. Verify response			
+	TC-106	Validate permanentAddressState with Andhra Pradesh	API validation with AP state code	Address Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	permanentAddressState="AP"	Request accepted	TBD	AP State		Address Validation	#state #geographic		REQ-AS501-089	Yes	Pending	1. Add AP state 2. Send POST request 3. Verify response			
+	TC-107	Validate permanentAddressState with Ladakh	API validation with new UT code	Address Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	permanentAddressState="LA"	Request accepted	TBD	New UT		Address Validation	#state #UT		REQ-AS501-090	Yes	Pending	1. Add LA state 2. Send POST request 3. Verify response			
+	TC-108	Validate permanentAddressState with DNHDD	API validation with merged UT code	Address Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	permanentAddressState="DNHDD"	Request accepted	TBD	Merged UT		Address Validation	#state #UT		REQ-AS501-091	Yes	Pending	1. Add DNHDD state 2. Send POST request 3. Verify response			
+	TC-109	Validate permanentAddressState with OTH	API validation with Other state code	Address Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	permanentAddressState="OTH"	Request accepted / as per rule	TBD	Other State		Address Validation	#state #OTH		REQ-AS501-092	Yes	Pending	1. Add OTH state 2. Send POST request 3. Verify response			
+	TC-110	Validate permanentAddressState with invalid code	API validation with invalid state code	Address Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	permanentAddressState="XX"	Request rejected	TBD	Invalid State		Address Validation	#state #negative		REQ-AS501-093	Yes	Pending	1. Add invalid state 2. Send POST request 3. Verify rejection			
+	TC-111	Validate permanentAddressDocument with valid individual code	API validation with valid POA document for individual	Address Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	permanentAddressDocument="Aadhaar"	Request accepted	TBD	Valid Document		Address Validation	#document #positive		REQ-AS501-094	Yes	Pending	1. Add valid individual document 2. Send POST request 3. Verify success response			
+	TC-112	Validate permanentAddressDocument with Passport	API validation with Passport as address document	Address Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	permanentAddressDocument="Passport"	Request accepted	TBD	Valid Document		Address Validation	#document #positive		REQ-AS501-095	Yes	Pending	1. Add Passport document 2. Send POST request 3. Verify response			
+	TC-113	Validate permanentAddressDocument with Voter ID	API validation with Voter ID as address document	Address Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	permanentAddressDocument="VoterID"	Request accepted	TBD	Valid Document		Address Validation	#document #positive		REQ-AS501-096	Yes	Pending	1. Add Voter ID document 2. Send POST request 3. Verify response			
+	TC-114	Validate permanentAddressDocument with LE-only code	API validation when LE-only document is used for individual	Address Field Validation	Draft	Manual	High	Critical	QA Team	Customer type is Individual	permanentAddressDocument="CertificateOfIncorporation"	Request rejected	TBD	LE-only Code Fail		Address Validation	#document #negative		REQ-AS501-097	Yes	Pending	1. Add LE-only document for individual 2. Send POST request 3. Verify rejection			
+	TC-115	Validate correspondenceAddressDocument with UtilityBill2m	API validation with Deemed POA document	Address Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	correspondenceAddressDocument="UtilityBill2m"	Request accepted for correspondence only	TBD	Deemed POA		Address Validation	#correspondence #document		REQ-AS501-098	Yes	Pending	1. Add UtilityBill2m document 2. Send POST request 3. Verify response			
+	TC-116	Validate correspondenceAddressDocument with PropertyTax	API validation with Property Tax document	Address Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	correspondenceAddressDocument="PropertyTax"	Request accepted for correspondence only	TBD	Deemed POA		Address Validation	#correspondence #document		REQ-AS501-099	Yes	Pending	1. Add PropertyTax document 2. Send POST request 3. Verify response			
+	TC-117	Validate correspondence country with IND	API validation for correspondence country	Address Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	correspondenceAddressCountry="IND"	Request accepted	TBD	Happy Flow		Address Validation	#correspondence #country		REQ-AS501-100	Yes	Pending	1. Add correspondence country 2. Send POST request 3. Verify response			
+	TC-118	Validate correspondence country with invalid code	API validation with invalid correspondence country	Address Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	correspondenceAddressCountry="XYZ"	Request rejected	TBD	Invalid Country		Address Validation	#correspondence #country		REQ-AS501-101	Yes	Pending	1. Add invalid correspondence country 2. Verify rejection			
+	TC-119	Validate correspondence ZIP with valid PIN	API validation with valid correspondence PIN	Address Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	correspondenceAddressZipCode="400001"	Request accepted	TBD	Happy Flow		Address Validation	#correspondence #zipcode		REQ-AS501-102	Yes	Pending	1. Add valid correspondence PIN 2. Verify success			
+	TC-120	Validate correspondence ZIP with over-boundary value	API validation when correspondence ZIP exceeds max	Address Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	correspondenceAddressZipCode="12345678901"	Request rejected	TBD	Over Boundary		Address Validation	#correspondence #zipcode		REQ-AS501-103	Yes	Pending	1. Add 11-char correspondence ZIP 2. Verify rejection			
+	TC-121	Validate correspondenceAddressLine1 with valid text	API validation with valid correspondence Line1	Address Field Validation	Draft	Manual	High	Major	QA Team	API is up and valid headers are available	correspondenceAddressLine1="12 MG Road"	Request accepted	TBD	Happy Flow		Address Validation	#correspondence #addressLine1		REQ-AS501-104	Yes	Pending	1. Add valid correspondence Line1 2. Verify success			
+	TC-122	Validate correspondenceAddressLine1 when missing	API validation when correspondence Line1 is missing	Address Field Validation	Draft	Manual	High	Critical	QA Team	API is up and valid headers are available	Remove correspondenceAddressLine1	Request rejected	TBD	Line1 Missing		Address Validation	#correspondence #addressLine1		REQ-AS501-105	Yes	Pending	1. Remove correspondence Line1 2. Verify rejection			
+	TC-123	Validate correspondenceAddressState with DNHDD	API validation with merged UT in correspondence address	Address Field Validation	Draft	Manual	Medium	Major	QA Team	API is up and valid headers are available	correspondenceAddressState="DNHDD"	Request accepted	TBD	Merged UT		Address Validation	#correspondence #state		REQ-AS501-106	Yes	Pending	1. Add DNHDD correspondence state 2. Verify response			
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
+																									
