@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Initial Risk Rating Report</title>
+    <style type="text/css">
+
+    body {
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 10px;
+        color: #2c3e50;
+        margin: 0;
+        padding: 0;
+        line-height: 1.4;
+    }
+
+    @page {
+        size: A4;
+        /* Top: 16mm leaves a 6mm gap above the running header (matching left/right margins),
+           then header occupies ~10mm. Bottom: 8mm for footer text + small gap. */
+        margin: 16mm 6mm 8mm 6mm;
+
+        @top-center {
+            content: element(page-header-running);
+            vertical-align: bottom;
+        }
+
+        @bottom-left {
+            content: "CONFIDENTIAL";
+            font-family: Helvetica;
+            font-size: 12px;
+            color: #555;
+            vertical-align: top;
+        }
+
+        @bottom-center {
+            content: element(footer-logo-running);
+            vertical-align: top;
+        }
+
+        @bottom-right {
+            content: counter(page) "/" counter(pages);
+            font-family: Helvetica;
+            font-size: 12px;
+            color: #555;
+            vertical-align: top;
+        }
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    td, th {
+        vertical-align: top;
+    }
+
+    /* === Page header — placed once in body, hoisted into @top-center on every page ===
+       padding-top creates the gap from page edge → header text.
+       padding-bottom creates the gap from header border-bottom → first body element. */
+    .page-header {
+        position: running(page-header-running);
+        border-bottom: 1px solid #d8d8d8;
+        padding-top: 8px;
+        margin-bottom: 0;
+        margin-top: 10px;
+    }
+
+    .page-header td {
+        padding-bottom: 8px;
+    }
+
+    .page-header .hdr-left {
+        width: 65%;
+    }
+
+    .page-header .hdr-user {
+        font-size: 16px;
+        color: #2c3e50;
+        font-weight: bold;
+    }
+
+    .page-header .hdr-gen {
+        font-size: 12px;
+        color: #888;
+        margin-top: 3px;
+    }
+
+    .page-header .hdr-right {
+        width: 35%;
+        text-align: right;
+    }
+
+    /* Header logo image (replaces the old text-based screenzaa/BY TRACKWIZZ stack).
+       Width controls the rendered size; aspect ratio is preserved by height: auto. */
+    .header-logo {
+        width: 170px;
+        height: auto;
+    }
+
+    /* Footer logo — placed once in body via the page-header fragment, hoisted into
+       @bottom-center on every page. Sizing the inner img is the reliable way; the
+       @page margin box's own width/height does not constrain content: url() images. */
+    .footer-logo-wrap {
+        position: running(footer-logo-running);
+        text-align: center;
+    }
+
+    .footer-logo {
+        width: 130px;
+        height: auto;
+    }
+
+    /* === Title bar === */
+    .title-bar {
+        background-color: #f4f6f8;
+        margin-bottom: 10px;
+        margin-top: 10px;
+    }
+
+    .title-bar td {
+        padding-left: 25px;
+        padding-right: 15px;
+        padding-top: 7px;
+        padding-bottom: 7px;
+    }
+
+    .title-bar .t-title {
+        font-size: 14px;
+        font-weight: bold;
+        color: #363636;
+        width: 34%;
+    }
+
+    .title-bar .t-meta {
+        font-size: 10px;
+        color: #727272;
+        font-style: italic;
+        text-align: left;
+        width: 22%;
+    }
+
+    /* === Customer card === */
+    .customer-card {
+        border: 1px solid #d8d8d8;
+        border-radius: 6px;
+        padding: 18px 20px;
+        margin-bottom: 8px;
+    }
+
+    .customer-card .cc-left {
+        width: 55%;
+    }
+
+    .customer-card .cc-right {
+        width: 45%;
+        text-align: center;
+    }
+
+    .customer-id {
+        font-size: 22px;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+    .customer-name {
+        font-size: 22px;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+    .risk-pill-wrap {
+        margin-top: 12px;
+    }
+
+    .risk-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background-color: #fde7e7;
+        color: #d63031;
+        padding: 6px 14px;
+        border-radius: 14px;
+        font-weight: bold;
+        font-size: 12px;
+        vertical-align: middle;
+    }
+
+    .risk-img {
+        width: 16px;
+        height: 16px;
+        display: inline-block;
+        flex-shrink: 0;
+        vertical-align: middle;
+    }
+
+    .condition-box {
+        border: 1px solid #d8d8d8;
+        border-radius: 5px;
+        padding: 8px 12px;
+        margin-top: 12px;
+    }
+
+    .condition-title {
+        font-size: 10px;
+        font-weight: bold;
+        margin-bottom: 3px;
+    }
+
+    .condition-body {
+        font-size: 10px;
+        color: #555;
+    }
+
+    .next-review {
+        font-size: 9px;
+        color: #888;
+        margin-top: 4px;
+    }
+
+    .speedometer-img {
+        width: 220px;
+        height: auto;
+    }
+
+    .risk-img {
+        width: 18px;
+        height: auto;
+    }
+
+    .arrow_right_img {
+        width: 15px;
+        height: auto;
+    }
+
+    .arrow_right_ch_img {
+        width: 15px;
+        height: auto;
+    }
+
+    .arrow_upper_img {
+        width: 15px;
+        height: auto;
+    }
+
+    .case_history_img {
+        width: 15px;
+        height: auto;
+    }
+
+    /* === Status bar === */
+    .status-bar {
+        border: 1px solid #d8d8d8;
+        border-radius: 6px;
+        margin-bottom: 8px;
+    }
+
+    .status-bar td {
+        width: 50%;
+        padding: 8px 14px;
+    }
+
+    .status-bar td.divider {
+        border-left: 1px solid #e0e0e0;
+    }
+
+    .status-label {
+        font-size: 10px;
+        font-weight: bold;
+        color: #2c3e50;
+        display: inline-block;
+        margin-right: 14px;
+    }
+
+    .status-pill {
+        display: inline-block;
+        background-color: #EDF4FF;
+        color: #555;
+        padding: 4px 18px;
+        border-radius: 14px;
+        font-size: 9px;
+    }
+
+    /* === Factors table === */
+    .factors-card {
+        border: 1px solid #d8d8d8;
+        border-radius: 6px;
+        margin-bottom: 8px;
+    }
+
+    .factors-head {
+        background-color: #fafbfc;
+    }
+
+    .factors-head td {
+        padding: 12px 16px;
+        font-weight: bold;
+        font-size: 11px;
+        color: #2c3e50;
+    }
+
+    .factor-row td {
+        padding: 12px 16px;
+        border-top: 1px solid #f0f0f0;
+        font-size: 10.5px;
+    }
+
+    /* Factor name (left side of each row) — bold for emphasis */
+    .factor-row .col-name {
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+    .col-name {
+        width: 30%;
+        padding-left: 18px;
+    }
+
+    .col-weight {
+        width: 8%;
+    }
+
+    .col-attr {
+        width: 22%;
+        font-weight: bold;
+    }
+
+    .col-arrow {
+        width: 4%;
+    }
+
+    .col-value {
+        width: 26%;
+        color: #555;
+    }
+
+    .col-score {
+        width: 10%;
+        text-align: center;
+    }
+
+    .bullet {
+        display: inline-block;
+        width: 3px;
+        height: 3px;
+        background-color: #555;
+        border-radius: 50%;
+        margin-right: 8px;
+        vertical-align: middle;
+        transform: translateY(1px);
+    }
+
+    /* === Shared inline arrows ===
+       Right arrow is rendered via inline SVG (see risk-report.html) for reliable
+       rendering — openhtmltopdf's CSS-triangle + inline-block line approach was
+       producing flag-like glyphs. SVG renders cleanly via openhtmltopdf-svg-support. */
+    .arrow-right {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .score-pill {
+        display: inline-block;
+        border: 1px solid #b8b8b8;
+        border-radius: 14px;
+        padding: 3px 12px;
+        font-size: 9.5px;
+        color: #2c3e50;
+        min-width: 18px;
+        text-align: center;
+    }
+
+    .factor-total td {
+        background-color: #fafbfc;
+        font-weight: bold;
+        font-size: 11px;
+        color: #2c3e50;
+        padding: 12px 16px;
+        border-top: 1px solid #e0e0e0;
+    }
+
+    .factor-total .label-light {
+        font-weight: normal;
+        color: #555;
+    }
+
+    /* === KYC sections === */
+    .kyc-banner {
+        background-color: #fafbfc;
+        border: 1px solid #e6e6e6;
+        padding: 10px 14px;
+        margin-top: 8px;
+        margin-bottom: 8px;
+        font-weight: bold;
+        font-size: 11px;
+        color: #2c3e50;
+    }
+
+    .kyc-full {
+        border: 1px solid #e6e6e6;
+        border-radius: 6px;
+        padding: 10px 14px;
+        margin-bottom: 6px;
+    }
+
+    .kyc-grid {
+        border-collapse: separate;
+        border-spacing: 0;
+        width: 100%;
+    }
+
+    .kyc-cell {
+        border: 1px solid #e6e6e6;
+        padding: 8px 10px;
+        width: 33.33%;
+        vertical-align: top;
+    }
+
+    /* Round the 4 outer corners of the KYC grid by rounding the corner cells.
+       openhtmltopdf doesn't honour overflow:hidden on tables, so per-cell radius
+       is the reliable way. */
+    .kyc-grid tr:first-child td:first-child { border-top-left-radius: 6px; }
+    .kyc-grid tr:first-child td:last-child  { border-top-right-radius: 6px; }
+    .kyc-grid tr:last-child  td:first-child { border-bottom-left-radius: 6px; }
+    .kyc-grid tr:last-child  td:last-child  { border-bottom-right-radius: 6px; }
+
+    .kyc-section-title {
+        font-weight: bold;
+        font-size: 10px;
+        color: #2c3e50;
+        margin-bottom: 5px;
+    }
+
+    .kyc-section-title.alert {
+        color: #d63031;
+    }
+
+    .section-icon {
+        display: inline-block;
+        width: 9px;
+        height: 9px;
+        border: 1px dashed #888;
+        margin-right: 6px;
+        vertical-align: middle;
+        margin-bottom: 1px;
+    }
+
+    .kyc-section-title.alert .section-icon {
+        border-color: #d63031;
+    }
+
+    .kyc-field {
+        font-size: 9.5px;
+        margin-bottom: 2px;
+        line-height: 1.4;
+    }
+
+    .kyc-label {
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+    .kyc-value {
+        color: #555;
+    }
+
+    .kyc-value.alert {
+        color: #d63031;
+    }
+
+    .risk-profile-bar {
+        background-color: #fafbfc;
+        border: 1px solid #e6e6e6;
+        padding: 10px 14px;
+        margin-top: 8px;
+        margin-bottom: 8px;
+    }
+
+    .risk-profile-bar .label {
+        font-weight: bold;
+        font-style: italic;
+    }
+
+    .risk-profile-bar .value {
+        font-style: italic;
+        color: #555;
+    }
+
+    /* === Case history === */
+    .case-banner {
+        border: 1px solid #e6e6e6;
+        border-radius: 6px;
+        padding: 12px 14px;
+    }
+
+    .case-banner-title {
+        font-weight: bold;
+        font-size: 12px;
+        color: #2c3e50;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 8px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        line-height: 1;
+    }
+
+    .case-banner-title img {
+        display: inline-block;
+        flex-shrink: 0;
+        width: 15px;
+        height: 15px;
+        vertical-align: middle;
+    }
+
+    .case-entry {
+        border: 1px solid #e6e6e6;
+        border-radius: 6px;
+        padding: 10px 14px;
+        margin-bottom: 6px;
+    }
+
+    /* Fixed table layout so column widths are identical across every entry —
+       this makes the "Stage" label and the pill align vertically column-by-column. */
+    .case-entry table {
+        table-layout: fixed;
+        width: 100%;
+    }
+
+    .case-entry td {
+        vertical-align: middle;
+    }
+
+    .arrow-col {
+        width: 5%;
+    }
+
+    .case-info {
+        width: 50%;
+    }
+
+    /* "Stage" label column — right-aligned so the word sits flush with the arrow that follows it. */
+    .case-stage-col {
+        width: 10%;
+        text-align: right;
+        padding-right: 6px;
+    }
+
+    .case-stage-arrow-col {
+        width: 5%;
+        text-align: center;
+    }
+
+    .case-stage-pill-col {
+        width: 30%;
+        text-align: left;
+        padding-left: 6px;
+    }
+
+    .case-date {
+        color: #5a8db5;
+        font-size: 10px;
+    }
+
+    .case-action {
+        font-size: 10px;
+        color: #2c3e50;
+        margin-top: 2px;
+    }
+
+    .stage-label {
+        color: #555;
+        font-size: 10px;
+    }
+
+    .stage-pill {
+        display: inline-block;
+        padding: 5px 18px;
+        font-size: 9.5px;
+    }
+
+    .stage-pill.review {
+        background-color: #eaf2fc;
+        color: #5a8db5;
+    }
+
+    .stage-pill.open {
+        background-color: #28a745;
+        color: #ffffff;
+        font-weight: bold;
+    }
+
+    /* === Pagination control ===
+       openhtmltopdf decides where to break based on content size.
+       The rules below prevent ugly mid-element splits and keep related blocks together. */
+
+    .customer-card,
+    .condition-box,
+    .status-bar,
+    .factor-row,
+    .factor-total,
+    .kyc-full,
+    .kyc-cell,
+    .risk-profile-bar,
+    .case-entry {
+        page-break-inside: avoid;
+    }
+
+    /* Tables: openhtmltopdf can only avoid page breaks at the row level, not the cell level.
+       So we apply page-break-inside on the table row — the whole row of 3 KYC cells
+       moves to the next page together if it won't fit on the current page. */
+    .kyc-grid tr {
+        page-break-inside: avoid;
+    }
+
+    /* Keep the KYC Factors banner attached to the section that follows it */
+    .kyc-banner {
+        page-break-after: avoid;
+    }
+
+    /* Keep the case-history title attached to its first entry */
+    .case-banner-title {
+        page-break-after: avoid;
+    }
+
+    /* Manual override — still available if a template needs a forced break */
+    .page-break {
+        page-break-before: always;
+    }
+
+</style>
+</head>
+
+<body>
+
+<!--
+    The page-header is placed in the body ONCE. The CSS rule
+    `.page-header { position: running(page-header-running); }` hoists it
+    into the @page top margin box so it auto-repeats on every page.
+    Content below flows naturally; openhtmltopdf paginates dynamically
+    based on size, and `page-break-inside: avoid` on cards prevents
+    awkward mid-element splits.
+-->
+
+
+    <table class="page-header">
+        <tr>
+            <td class="hdr-left">
+                <div class="hdr-user">PrachitiKulkarni_Trackwizz</div>
+                <div class="hdr-gen">Generated By: sagark on 09-May-2026 16:04:58</div>
+            </td>
+            <td class="hdr-right">
+                <img class="header-logo" src="data:image/png;base64,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" alt="screenzaa BY TRACKWIZZ" />
+            </td>
+        </tr>
+    </table>
+
+    <div class="footer-logo-wrap">
+        <img class="footer-logo" src="data:image/png;base64,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" alt="TRACKWIZZ" />
+    </div>
+
+
+
+<!-- ============================ SUMMARY ============================ -->
+
+<table class="title-bar">
+    <tr>
+        <td class="t-title">Initial Risk Rating Report</td>
+        <td class="t-meta">Req ID: 2606NotToday2606</td>
+        <td class="t-meta">App No: APPREF1919</td>
+        <td class="t-meta">Source: FINACLE-8083</td>
+    </tr>
+</table>
+
+<div class="customer-card">
+    <table>
+        <tr>
+            <td class="cc-left">
+                <span class="customer-id">260625</span>
+                <span class="customer-name">Vijay Mallya</span>
+                <div class="risk-pill-wrap">
+                    <span class="risk-pill">
+                        <img class="risk-img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADQAAAAwCAYAAABe6Vn9AAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAMCSURBVHgB7ZhbctowFIaPgDxBZ9zHlMuQHYQVNNkBrCB0BQ0rCFlByAqargB2QLoCsgNogEwfPQOZ6YxN1HMMBEv4Il8aw4y+Fxshy/p1bpIBNBqNRqPRaPxgkBHjumEUbOsKp/AZYsI4H1Tmr09CG2TEtFwa4uUCksLgsjpbPm5/5iAjOGd1SAG0Ut39OzNBkIcOBzaBlClARtSmiwFeBqr90UVHeDkP65edhSLwXC7dgYIYIjMLqTL9UrrBy7Vq/4O20LRS/I5ZrCs1PwY9c7CCZuXiOXDWExoZ3HLgP4OeS0UQFsk6ukafasu0UrqAhNB4b5DrS833WG+6Yc+mIqhg2X1cvSZQoeQwxNW9gpiQmLy1GjIQ6stTdb5UiqPEgjZBK2QgrC8PcUXR4rjF4P2ksLJbqs8nEvRcLrY9gtaBRP0+LSpnp/V4YnomMfnV6vL0z9+J6hixBZFr4OM3UrOwUczl2N3GgqFQP7afnltRxDjvhJjIfo73D+jnDbSMmIXQgmGivNIzjteRd9IqxBJEriH7ufV60qH72nzRjiLKLz2jmB7EILIgWk3BNRiY5Odnpmlum0gUTQrESe6JipOeGRM3tBbPmeJrIkATKNj2CCPe2A3guIbnamJN6mJf0TIcutWX5W1Aem5ACDhuD95YE88OAzmdKwuiEyZOYCRN4D6sPniJ4gA9tj7cJcpoXigLWsfNztU2cdNwu5ofnpYSJpGOmPVYCjhZyB24GDfoeo0oEwgShYIacTKaF6FJwak3UhbCY+911NWkQKd4k9vjpmc/AgVtA1eaAaXUwB2vH5Q8cLf8TRorVnr2I9DlZuVPP3AC7V1nPsEJnEFCxobhZEmV+IuK74mVaoYshgIXUuB/CNniaSGq3ljtR+42/OzUqr0slD9qZMVeDHlWb/T1YxBD7FkI02sf02vT1aRUvQ8FIYacvZZLzCZulA9Xh8C7hZx9mmWPpX+F78bHwHsMnYBlCP9g3BybGEKIIdqeMA5fOYNfKl9YNBqNRvPR/AO+9Fmba6O9rgAAAABJRU5ErkJggg==" alt="risk-img" />
+                        <span>High Risk</span>
+                    </span>
+                </div>
+                <div class="condition-box">
+                    <div class="condition-title">Condition Based Outcome</div>
+                    <div class="condition-body">Factor: Politically Exposed - Derives High Risk</div>
+                </div>
+                <div class="next-review">Suggested Next Review: 10 Apr, 2027</div>
+            </td>
+            <td class="cc-right">
+                <img class="speedometer-img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWwAAADgCAYAAAAnmlyuAAAACXBIWXMAABYlAAAWJQFJUiTwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAB5zSURBVHgB7d0LdJTlmQfwZy5JyI1L1J4SULTlzkKrgNBWkUtrpUJ1C20Fq1uPSqzuqgtYoRVtRc5SimzFLRe17alU7Hahu+BKrT0SoNuuLZcedA8a3HOECsGjgEiA3ObS7/8ObxyGTDLfZZJ5v+//88SZZGYCfJn555nnvXyhpEWIiKjghYWIiIzAwCYiMgQDm4jIEAxsIiJDMLCJiAzBwCYiMgQDm4jIEAxsIiJDMLCJiAwRFSLDJI8darueOH7o/NsbT0qotOd5X8fX9NdDF/QXItMwsKlgIIjjh/epwE1Y1/G5un48dak+zpwUL4Wt4A5XpcIblwhy/TWEe7j/cCEqFCHuJUJdSYXu2WCOH9rXdj1x7JAUKh3gCG9cj/Qbrq63V8UT5RMDm/JGVcdWKKtAfmefxP7/1YIOZrsiCPCzQR4dNJ4hTnnHwCbPIKBjr72sKuf4W6+qy6AJW9V3tP8wiYy61gr0EaoiJ/IKA5sc0xV0K0I6oAHdmXC/YVaAD1cBHh30GQmVsQIn5xjYZAtCuvVPGyS29+XUAKHHg4B+Fxk4ToV3kfWB6jsUCglRrhjY1CkMDLZYIY0qOmZ9kDdC1cOkaPB4iY6bqfrhDG/qDAOb2oVKuqX2pwzpLhKq6idRq+ounnibVXlfzPCmdjGwqY0eNGx9dQNDuhuFPzlOisbPUD3vyIUXC5HGwCZVRWPgEL1p9qQLS/TKr1gfM6VoyGdYdRMDO6hYTZsFLZOi6+6zBiu/KJGKXkLBxMAOGN2bbtn2U1bTBkJwY6ZJyZfuZ687gBjYAYH9OBDUbHv4R8RqlxRbVXf0oksY3AHBwPY59Kebt/zI+LaHWvKN3fasClNKK9V19fU+/T66D/7Tt6nNohrO+R6Jxg9FmhrUbdLY0Haf5HGzl8tjkLJ46n3scwcAA9unTAvqEHbH6zdUhW247zC1IjDUb5iEy3qpUA6FVRxbd1T/F51LTgNKP+1xoa5ZoY19ThDqaqdAfH74DRXq6tIADG7/Y2D7DFofTevmF2xQqz2prSCW6qESrsaud8NSW5laAR0OhSUcTgVNoQQOXh54hWAJPo6tWoKPFZ5WiGM8oBAhuEtuXsZWiQ8xsH0C4dG08VE166OQqMp54JWqag4PGpfamjQcVkESChVOMNuFlw0q78SxdyS23wpx7ERYYJV4ZOxXVMXN4PYPBrbhCm3WR1tAf8IK55Gfl3B5r7bK2e+hkTjzoVWB/8l6d/O/qhIvlABHcGNWCRbhMLjNxsA2GGZ8oKru7qAODxwn4RFWOI/8gkSw2X84GAHdGfTC9aIkXHZnC0Utff/ivVI8/qsSifBUrqZiYBsoYfVQmzY82m19at2HDo/5ihXSn5eIVUVHwpG2/jOdDy+z+Ou/U+GNBUvd9UsWwV1822opvnQkq20DMbANcqK5QX7+6o9lzx9/Ln8tTlVJI5viUnO0RS5uTUi+qUqaIe0Jtcr07ErT7qD621abJMo2iVEY2IbYUb9Lbq9dJAcb6tu9veZYsyw50iReQ0iHPnmlRCZ8kyGdB129RUAyFpLEhxGRuNWyuqhaimf8o5RcM4NtEkMwsAscquo7ti2SzW/Xdnrfz52Oyaa3T4tbquUx9u8l8ndWT3rQeCuk2ZPuCpg2iLnzasDS43NfIqhj7xRL/P2oup6u+PrpUjbnbinuzxMqFDoGdgFDSCOsEdq5+vZ7TdZHsziBoA5P+AdW0wUAA8oIby+CO9kckub/K1OX2YQqKqX0WzVS9rVbWW0XMAZ2AUJAL969Wp587Tmxq1c8KXv2N6jLXKHtEbn2n1KXVjWNFywrrcKAahtn+3HT627aXd5hWKdjtV3YGNgFprNedS6ePHxGZn3Q2un9dFDrtgcrq8Kl2yV2gzv+fpG0vFVi6zHhvtVSeuddUjr9Rj4nCgwDu4A8+fpzMu8Py8Stztoi6UEdjbDtYRK7wW2nus5UctNsqZj3oHqOUGFgYBcAVNN3WFX1dqu69kK2wGZQ+0cuwY3BxaY/l4sbqLYrVj0tPS7h8vZCwMDuZl60QDItOdIoNcda2j5P71EXRaMMah/pKLhRWaPCdgsDkmVzH2CLpAAwsLuRVy2QTH+pa1ALabCvR+SG70hk5Besiho9ar619SsMTjb+Yv45s0q8qLDT9bijRspr7maLpBsxsLsBZoHM/+MyebZus3ht1okW+bdjRWp6Xvjqb0pRRW/O+giQzOmAzXvKJdHk3c8+esVoKX94sZRczBWS3YGB3cXQ+pj50v2y91ideK1nIim/7zFeLp26UO3MVhSN8EUVQOltEiyWabU+vMS+dvdhYHeh16yQnmGFtZf9aq13caX898Rl8qn+Y9VbVvYaCcF95vFZcmbrccczRbJRfe2HH5XSSVP4XOtCDOwugvYH2iB2Vi3m6uq+o2X1VY/IZb36q141qx5K1/SfT8jJZU95HtrAvnbXYmB3gXwNLqKqXnD5nXLPiNmc/UEditfXywdzbrMuD4vXGNpdh4GdZ4t3rbE+VovXWFWTE6fWrpLT1ofXsMimfO6DatyE8oeBnUfzrBaIk/1AOsKqmtzKV7VdNGGilFt97eI+fVhA5AkDO0+wctHraXsDKvrK+inL5dMXDVVvP/miIDcalv9AzqxfJ16KDBoslaufYWjnCQPbYxhU/Opv7/dsmbl294ibZOGn58iFZb25AIY80/jCJjm1fKkkGrwbDOe0v/xhYHsIYf2Fzbd7Osc6vQVSXBTlC4A8l48WCUM7PxjYHslHWOsWyKcuHMpFMJRXSavCxoCkly0Shrb3GNgeyEdYYxbI+sk/lAusFginS1FX8XoWCUPbWwxsDyCsvexZo1/9g3HzuWETdYvmbVvl5CPf9ayvjYHIilXPSEkVByLdYmC75PVskKXj5rJfTd3O6742Q9sb3ATAhXke7riHwcXnp/yQYU0FIVJdLX2e+pkUDRkqXoi/tV9OP/jP0tIaE9aIzjGwHcIKRq8WxWBw8cWpa2TagEkMayoYOrRLJk0RL8T27JYzix+W1lhcyBm2RBzwcrl5KqzXqiXmXNZLhcrLRTbYewRnZufz3T4Gtk2b366Vmb+9X7zAsCaTeDmDpPT++VJ28y2cAWUTWyI2qJPlblskXhhVNViF9Sd6M6zJDBU1d6td+bzQ+KPl0rj1FYnH2R6xgxV2jhDWn998uycnH0iF9RrOsSYjeVVp4yQI5aueltLhI7iJWY4Y2DnAwpixG77GsCY6y6vQxsIaFdpcWJMTtkRysHj3aoY1URqv2iOJI/XSuPhhTvfLEQO7E15N39P7gjCsyS+8Cm1M92v80Q8lxul+nWJgdwAnzfVi+p6eDYIBRoY1+QlCu3T6DeJW8y/XS9MLmyTGQcgOMbCzQAsEZzh3K33qHsOa/Kjn95d4EtqYOdLyziFJJNgayYaBnQX2CHHbt8Zyc4T1gMpqTt0jX6ucv8D1MvbkqQY5fc+d0vLBB+xnZ8HAbgf61l7svrf66odVWGO5OZGfhSorpdfjKyVS3U/cwCBk00/WcPl6FgzsDKiqvehbL7z8Tu4NQoGi9x4JW+HtBvrZzVY/m4tqzsfAToP51lgc4xbC+juX1zCsKXAQ2r1WrBS30M9uZj/7PAzsNPP/uMx13xpnisHJcnHyAYY1BVHx6LGqp+0G+tmNj2FnP87PTsfAPmtd3WbXe1tjRsjqqx6RqDXAyDPFUJCVzf6G9XGLuIH52c2/fE7iiYRQCgNbUn3rR132rfWMkMt69eP0PSJJzdF2O3Ok6Zm1nOqXhoEtogYZ3bZCFlh9a8wIYVgTpeiZI24GIdkaOVfgA9uLVghOmnv38FkcZCTK4MUgJFsjHwl0YGNWiNtWCPrWapDR6lszrInOh0FIt/1stkZSAh3YT77+nOtWCPrWVaW92Aoh6kDl/Add9bPZGkkJbGB7sUBm6bi57FsT5chtPxutkdY9uwLdGglsYLs9LyPmW6NvjbBmK4Soc+hnl9fcI240Ln5EYic+DGyVHcjAxkDj3qN14pSeb4251pEIJ9oQ5Qrzs4vHjBWnsNdI878/F9i9RgKZNm4HGhdePudsK4RhTWRXz+8tcdUawV4jscOHAzkAGbjEwU58bgYabx40TWYPnCZFUU7hI3LCbWsEA5DNake/mARNoAIbQf3k678Qp7CaEVP40AbhWZ6JnHPbGml58YXUAGTAdvQLVGBjVgjmXjv1rRE3cVYIkUfcbhDV/MwadR7IIA1ABiawUV27WdHYtkCGs0KIPBEdPETtN+KUmub3l92BmuYXmMB2O+caZzyPhMOcFULkIayAdHOWGlTZ8QBV2YFIH7fVNQYaR1YNVsvPicg72CAKqyCdClqVHYjAdltdpwYa2QohyoeSiZNdDUAGqcr2fWC7ra4Xtm2bylYIUb6Us5edE9+nkJvqGgONXH5OlH/Y0a90+o3iVFCqbF8Htvvqeo70LunJgUaiLsAqu3O+TiK31TVWNHLONVHXwApIN9P8glBl+zawvaiu0QZhdU3UdTDNz+k+I0Gosn2bRm4XybC6Jup6mObn5uw0rS9uVlW2X/k4sDeJU6yuibqPmyobe4wkGhp8u5OfLxMJ+1073ZGP1TVR93JbZbf8ar3EfLoplC8Dm9U1kdncBDb2y05YfWw/Vtm+SyVU1tvrd4kTrK6JCgOqbKfzsrFfdsyng4++C2w3U/lYXRMVjh5fvkGcwhS/RNx/U/x8l0xOq2u46uOjWV0TFQisfnS6xwim+KUGH/1VZfsqsN0MNmJHvkuslgjPJENUONysfsTgY9xnfWxfBbarwcazp/7iniFEhQNVttMpfnrw0U9tEd8EtpvBxqv7jlbVNdshRIXH6YwRPw4++iawd7joXd88cJrVCmF1TVSI3Ezxi22v9dXKR98E9kqHZ0PXU/lw+i8iKjyY4ud08BErH9EQ8cucbF+kFNohe4/WiRNXWe0Q4GAjUeFyOvjot7aILwJ784FacQrtEA42UiFLNjRI6+6d0rxtqwSVm8FHtEUSPlmq7ovAdjo7BO0QzL2OhDnYSIUDAY1wblj+A/ngztvk6LRr5dSaVRIdPFSCrIfDlY9+aotExXBu2iGzB01XlTXbIdSdEkfqpWXXn6W1rk6aa1+R+JFz1xJg0M3NmcX9omTSZDmzfp3YpdsikTFXWq91s4sz4wPb/ewQhjV1rdj+N62A3iWxujdVUGcGtIYWQK8VK1U7gFJtkUjf6qzHqyNoixRdMca6xsDuVk7bIaOqBqu512yHUD6hvYGA1tUzrmPJdGeiQ4ZK78dXqtNm0UdKv3yjnFq7Suxq3bFNetw/Xy2iMXm8yvjAdrpYhu0QygcEdIs1QNiya6eqoHMN6HRsgWRXhOl9a8U2tJ0SR45I4uL+EjF4gZzRge2mHXL1x69gWJNrnfWf7UALpGL+Aimd7nyXOr/Ts0Xs/hKE2I5aic76hpi8oNnowN7kcDofZoeMtFoibIeQXbn2n+2KVPeTPk/9jC2QHGC2iJPBx9ieXZL8+myj2yKGV9g7xQkslsGPixU2dcRp/9kutEAqau5WK/qoc05ni2DLVUzsw15QpraxjQ3sEy0Njqfz6b1DiNJ50X+2A2/tsYLPzV4ZQVQ0eKijtogfpvcZG9g7DjvvX6MdwsAmL/vPdqEFglkg0SFDhOzBOxHMosEvVrsS++skafA0SWMDe/sR51up9iquZDskgNL7z83bXslr9dyRHtagYk9rcJEtEOdKJk5xFNjoYycM7mMbG9ivHX1TnLj+konqB8W9Q/ytq/rPdmG6Hlsg7jldTIQ+NpjaxzYysNG/djr/elTVIFbXPpTZf8b1QsIWiLdwHJ32sTEfO3lxfzFx1aORgf2aw8FGwGZP4RD7136AkMZsAYR0ZkA7naubD6gGe69YyRaIx7BHdlOt/R0M43+x2iL9+hk5H9vIwN57zFlgX829r32j6YVN0rB8qQplhHPp9BvVdC+EY3owxqxBJgQ6gj1ef1i6GmaBVLg4kSxlVzT6SmeBbT0nTD2bupGBvf2ws7e7mB2CqGb/2myn165q208CQY2+cLbqNTp4iPoom/0NabRCHo/tiuBGC6Tn9x/jxk155LS9hKl9qfnY5g08GtkbOHjK2fSr1HJ0tkNMlh7WCGqEYq6tBiz5vuD5DVYlPkXyCSGNVYsM6/wqcrg/eKI+lR8mnkzduPRys2BmZNUQCbEdYiy0N3RY9/z+EkezLRDuvR9/Im/7deDv1OdpLjHvCvhZFg2xH9p64DGRNK8tYlxgOx1wxNxrbKfKAUdznZh7r7pEX9ht4FbOX6DaFl5BHx1BzV32upbTs/Bg4DFp4BlojEsvpwOOoy4YrC7ZvjYTzmmI3jNC1otBPFRnaKd4Aavuqp7fyBZIN4gOcRjYGHg0sCdiXGAfaHDWv8Z0Pg44mqtx83+py3IPZ1wgYDE1zA20QNAXZwukezgdeMS2BBh0TBoW2ga2RJytcMSCmRAHHI3Vsju1UMrrKtZpayWsKvQlbIF0M6cDj/G39ouJjBx0dOKSimpW14bCAhm0Q/D21+tKFntS2IW2DFogPNFA90NrC+d5tCtxdqMv09oi5vWwHc8QGSycIGImvWLRyQuzM3jBh22sQGQLpPAUDXU4ve/IEePm9hm1cMZpWOOEuxDiDBGjhSt7Sj6EKqzA7mQZO/euLlzhvs5m+8TfsgYe+/czakcRowL7Q4ftkF4lqQqKHRFyghs3FTbH0zNPWXli2EQRo0rOgw5niIxsq7CZ2CZC+yG1mdNJyQcspMimx9nVkQzrwuW0PaXOpM6WSP44ndKXOmEB2yEmU2cYycOWqfH6+qy7+nHvajNEHLZE1MAjBx3zx2mFjSl9ZDZM59N7XnuptZ3vh7fYFzy/kWFtCDcVtt4EyhSGBbazXdZQYbMbYjYdnqfP7iXilVMZ3w+/GNgCMYvdmT6amiVimED0CTgH23x4UWKXvfZOVuAU9tRO32oVs0CwHwhPNGAeNdPHpuTZVphJXRGjAtt5D7tCGNfmq5z3oKqkTj7yUNuLzSn0rnV1jRYIgponGjCXk5kierA5adBUkUD0sFMtEQ46mg69yvKae1RVfHzONx2HNsL6gzm3qe/Dvav9wenUPtMWz/g+xbClKvkHzhyDfnasrk6OzZop8SP2foljT20d1ty7msCkeSLGBLbT6rp3MRfN+A2m26HfjNA9ev21qdN+dRLcqMZxv2M3zbCun+Te1T7jeKbIu/VG9bCNPKejHXqVI/kL+s1Yqo6T6546e9owvV0q5myj141ATzSckubaV9oGKnEbVi2yqqaPmJPY/g/sYga2X6E9UjJxsqqcm7elQjnbDBJ1ZnWrBcKBRX9y+gvY7eB1VzMmsAdUVktvq1o+0WzvAE+75Bp1yWl9/oQXKs4ck2x4MBXYu3Za/e3UnukhqwLH7SWTJqt9kzldz7/CDgcd8ZxgSyRPJvQdK5sPbM35/gOsAUecaYb8T83TtqptfFDw4Bdyar8ZewVdZOBgMYlRs0Qe/9wDqsrO1exB0zhLhCgA8Avb7lYCxddPN+5dl1GBjbbI0ivn5nTfhZffKQs/PUddZzuEyP/K5nxLIoNyq5jDfa1W2e01Yhrj5mHPHjhNtkxdY7U72h9kwDS+pePmtoU1EQVH+aqnJXpFx21QhHX5j59Sl6YJJQ07bXBTc0vb9f95d7f8/t098tdT9Wr5+aiqIXK9NciYOTMEFXZJcZEQkX8hyppbWtX1lhdfkNYtmyW2Z3fb7QjyyOVjpOTrs89phWDr5eIiM4bzjAtsIqKg4gYbRESGYGATERmCgU1EZAgGNhGRIRjYRESGYGATERmCgU1EZAgGNhGRIRjYRESGYGATERmCgU1EZAgGNhGRIRjYRESGYGATERmCgU1EZAgGNhGRIRjYRESGYGATERmCgU1EZAgGNhGRIRjYRESGYGATERmCgU1EZAgGNhGRIRjYRESGYGATERmCgU1EZAgGNhGRIRjYRESGYGATERmCgU1EZAgGNhGRIRjYRESGYGATERmCgU1EZAgGNhGRIRjYRESGYGATERmCgU1EZAgGNhGRIRjYRESGYGATERmCgU1EZAgGNhGRIRjYRESGYGATERmCgU1EZAgGNhGRIRjYRESGYGATERmCgU1EZAgGNhGRIRjYRESGYGATERmCgU1EZAgGNhGRIRjYRESGYGATERmCgV0Ajh49KmfOnBE6F45LR3DMOrtPLn+GPva4fOONN4RSsh1bHKf05yuOWa7P38zHkj1RoawONtTLHbWLZO+xOjnR3JDz4264bJIs/+y3ZUBldU73X7x4scyYMUMmTJggJkgcPyRN6+ZL/PA+SZ45mfPjikZdKz1mPiyhqv453f/ee++VW265RaZOndru7evWrZN9+/bJE088IU6tXr1ahg8fro7/rl27ZOPGja6+X1eI19fLyUe+K7H9b0qiIffnZcnEyVL5wAKJ9M3teYnjv2jRIhk2bNg5X//Nb36jjjtue//999XzF8esrKys0++JY7x9+3b1WLKPFXYWCOuxG74m2+t32Qpr2PR2rXosvoffIKxPL/2SxN561VZYQ+trL8upf/mSJK3vkauXXnqp3a+j+sML30tjxowp+CBBWB+fNUNadu+0FdbQvG2rHLtphsSPePe8vOiii2TlypXqkvKPFXYW8/6wzHZQp8NjUZ3/7ss/EbfwlnPLli3qreTHPvYxVQ1eeOGFcvDgQVXt3HXXXW33RYU4YMAAFT6A+yDYbr31VvFC88ZHbQd1umTjSWm0qvOy+36Z0/1Rwe3YseO8dx/Zwhr//gMHDqhjhWOQWZ3je+3cuVPdfs0115xzG44VbsOxwu3PPvusup5eOaYfX3wv3IbH4c+sqKhQP5vTp0+rnwv+7vgzvHzndOrxpbaDOl3Seiyq8z5P/Uy8gOO0YcOGc45T+vN1xIgR6rkK6cch8z7XXXddThV60LHCzmLzgVpxC60UtxAKeMtZXl6uXvzJZFK9VcUTHlXN7t272/quePIjUNKrUjweweGV1r0vi1vxQ/tyvi9e5Pg3ZMLX0MpIh+Okv45jhePw2GOPtd2OY4M2yqWXXqpux+fpPWscJxxPQOjie+EyHVoBCGh9fe3ateq4jx07Vn2Ov8OaNWtUqOPvgesIb6801W4Vt1rr3hSvZB4n/XzVx/i9995TxwDHRsMxx9dwHxwj/PLF59Q5VthZ9C6pdFVhg9vHA0IFVRs+QFcp+PpDDz2kggF9QfQZcYnPdYWJigVf04/1Qqi0p6qS3bDzeFTICF28yHUvVQc4jgWOA+hfXOil6rfnqILvu+++tl9uuC/ejehjqG93A9Uj+uyAvx++X/qfgZ8DwipbH96ucGWlqwobkjYej2OmK2QNv7CyVcO4P6rl9Odre4OXeO7qnxNCGyGvn7OUHSvsLD51wRBx64bLJosbqPjwodsbmq7m8AQfPXq0CmVAMCEYULngdrxQ8PjMQSM3Iv2Hi1tRa/AxV3gBIwB0MIP+JZYO/14EAMIct+NDV7a4Tb/LSD+W+N44fm6kh5kOoPR+Lv4ML2dFRIcMFbcw+Jgr/Pvw70n/wLu99ujna2arKfP5h2OSfoxQZIB+50LZMbCzeGbSYlVlO4XHLv/sA+KFzKpDf463oXhx6BeKrrR1iKMfi8+9HBDqcctyVWU7FSrrqWaK2IFfQngx4xdSenWdLrN1oSHsUcHpwPa6gssWXvnS83tLVJXtFB5bOX9BzvfH80u/w9MfnRUAnR3jzGPGqjp3DOwsMCVv58xf2a6SEdTXVI9Rj811Wl82+omdWXkgfHS1gyc7Agm9WV0NoYpEYOMjszp3K1zVX8oXblFT9OxAUEcHjZfyBVvU97Ajvcpur7oGVGkI7cxwQeAgYHQVlznPOlt/Xx/7zLfzbud9uxWprpaq5zdaVfIUW49DUBePHqsei++RD9mer919zPyEPewOIHD/44v/Kl0BT+rMMEHQoJLUA2UIZNwHoZVeYeJ++JrupSK0dVskfQaJVxC4pXOeklLpOrpfjX9be7MuEMy//vWv1X10vxgtET2vWg8CYubHvHnz1LFEtY7jmTl4CfoXob4/PtczP7obArf3isKbK45j1N7zFYOKpqwxKHQM7AKBqVGZ1q9fr6ZLITQwM0TDkz+9ykSwIJjSq2mEOCpOv8yP1UGd7d+DsMBA1ooVK9r63aj48AtLP6ampkYNYOpjia939PY+8/64r5fjAX6E5ytmfOhjhp8Bj5l3QknME6OCh8oOVTgqRfb8OqbfkuuWUbbbdZukM/otfeZsCcou/WeAggPy8W4vaFhhG0L3rKlznQVxrkGtMahzh6BOn8ao92dhS8QbDGwi8gzejaCHjQFvvbBL97bJPbZEiMhTeoqpXgiDAWG28bzxN8TwY2sdxvLPAAAAAElFTkSuQmCC" alt="speedometer" />
+            </td>
+        </tr>
+    </table>
+</div>
+
+<table class="status-bar">
+    <tr>
+        <td>
+            <span class="status-label">Assessed Risk</span>
+            <span class="status-pill">Pending</span>
+        </td>
+        <td class="divider">
+            <span class="status-label">Onboarding Decision</span>
+            <span class="status-pill">Pending</span>
+        </td>
+    </tr>
+</table>
+
+<div class="factors-card">
+    <!--
+        Single table with thead + tbody so the header cells share column widths
+        with the body rows. "Factors" spans col-name + col-weight (38%);
+        "Attribute Value/Score" spans col-attr + col-arrow + col-value + col-score,
+        starting at the same x-position as the body's attribute column.
+    -->
+    <table>
+        <thead class="factors-head">
+            <tr>
+                <td class="col-name" colspan="2">Factors</td>
+                <td class="col-attr" colspan="4">Attribute Value/Score</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="factor-row">
+                <td class="col-name">
+                    <span class="bullet"></span>
+                    <span>Age</span>
+                </td>
+                <td class="col-weight">10%</td>
+                <td class="col-attr">Age</td>
+                <td class="col-arrow">
+                    <img class="arrow_right_img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAXCAYAAABqBU3hAAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAADRSURBVHgB7ZRBDoIwEEWn9SIchS3hELonJNzAcgIXwNpbtFu9WOtMogQTKXXxqwveAgpt8l/SzCfa+TGKAIzjeOFXp5QyTdP0sbOaMHTyCCGYaZrOlFuAg/vFOipxIADOuVtVVXwDqnz+Kuu6JmvtnXIIfCMBE0iVgAqkSMAFtiQgPbDGMAyGJeaJkJ54E+BxOXnvCwKitT7yaBazxDKcN66UGVQTJvM/V5ADqWSp5te3VHY2gU/hbduaLAJr4bKGC8TC4QJb4VCBlHCYQGq48AA3V6JWMCNO5gAAAABJRU5ErkJggg==" alt="arrow_right_img" />
+                </td>
+                <td class="col-value">36 Years</td>
+                <td class="col-score"><span class="score-pill">0.5</span></td>
+            </tr>
+            <tr class="factor-row">
+                <td class="col-name">
+                    <span class="bullet"></span>
+                    <span>Constitution</span>
+                </td>
+                <td class="col-weight">10%</td>
+                <td class="col-attr">Constitution Type</td>
+                <td class="col-arrow">
+                    <img class="arrow_right_img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAXCAYAAABqBU3hAAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAADRSURBVHgB7ZRBDoIwEEWn9SIchS3hELonJNzAcgIXwNpbtFu9WOtMogQTKXXxqwveAgpt8l/SzCfa+TGKAIzjeOFXp5QyTdP0sbOaMHTyCCGYaZrOlFuAg/vFOipxIADOuVtVVXwDqnz+Kuu6JmvtnXIIfCMBE0iVgAqkSMAFtiQgPbDGMAyGJeaJkJ54E+BxOXnvCwKitT7yaBazxDKcN66UGVQTJvM/V5ADqWSp5te3VHY2gU/hbduaLAJr4bKGC8TC4QJb4VCBlHCYQGq48AA3V6JWMCNO5gAAAABJRU5ErkJggg==" alt="arrow_right_img" />
+                </td>
+                <td class="col-value">Individual</td>
+                <td class="col-score"><span class="score-pill">0.1</span></td>
+            </tr>
+            <tr class="factor-row">
+                <td class="col-name">
+                    <span class="bullet"></span>
+                    <span>Financial Size</span>
+                </td>
+                <td class="col-weight">10%</td>
+                <td class="col-attr">Income Range</td>
+                <td class="col-arrow">
+                    <img class="arrow_right_img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAXCAYAAABqBU3hAAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAADRSURBVHgB7ZRBDoIwEEWn9SIchS3hELonJNzAcgIXwNpbtFu9WOtMogQTKXXxqwveAgpt8l/SzCfa+TGKAIzjeOFXp5QyTdP0sbOaMHTyCCGYaZrOlFuAg/vFOipxIADOuVtVVXwDqnz+Kuu6JmvtnXIIfCMBE0iVgAqkSMAFtiQgPbDGMAyGJeaJkJ54E+BxOXnvCwKitT7yaBazxDKcN66UGVQTJvM/V5ADqWSp5te3VHY2gU/hbduaLAJr4bKGC8TC4QJb4VCBlHCYQGq48AA3V6JWMCNO5gAAAABJRU5ErkJggg==" alt="arrow_right_img" />
+                </td>
+                <td class="col-value">1 - 5 lacs</td>
+                <td class="col-score"><span class="score-pill">0.1</span></td>
+            </tr>
+            <tr class="factor-row">
+                <td class="col-name">
+                    <span class="bullet"></span>
+                    <span>Geography</span>
+                </td>
+                <td class="col-weight">10%</td>
+                <td class="col-attr">Permanent Address State</td>
+                <td class="col-arrow">
+                    <img class="arrow_right_img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAXCAYAAABqBU3hAAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAADRSURBVHgB7ZRBDoIwEEWn9SIchS3hELonJNzAcgIXwNpbtFu9WOtMogQTKXXxqwveAgpt8l/SzCfa+TGKAIzjeOFXp5QyTdP0sbOaMHTyCCGYaZrOlFuAg/vFOipxIADOuVtVVXwDqnz+Kuu6JmvtnXIIfCMBE0iVgAqkSMAFtiQgPbDGMAyGJeaJkJ54E+BxOXnvCwKitT7yaBazxDKcN66UGVQTJvM/V5ADqWSp5te3VHY2gU/hbduaLAJr4bKGC8TC4QJb4VCBlHCYQGq48AA3V6JWMCNO5gAAAABJRU5ErkJggg==" alt="arrow_right_img" />
+                </td>
+                <td class="col-value">Maharashtra</td>
+                <td class="col-score"><span class="score-pill">1.0</span></td>
+            </tr>
+            <tr class="factor-row">
+                <td class="col-name">
+                    <span class="bullet"></span>
+                    <span>Occupation+Income+Age</span>
+                </td>
+                <td class="col-weight">10%</td>
+                <td class="col-attr">Occupation-Income-Age</td>
+                <td class="col-arrow">
+                    <img class="arrow_right_img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAXCAYAAABqBU3hAAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAADRSURBVHgB7ZRBDoIwEEWn9SIchS3hELonJNzAcgIXwNpbtFu9WOtMogQTKXXxqwveAgpt8l/SzCfa+TGKAIzjeOFXp5QyTdP0sbOaMHTyCCGYaZrOlFuAg/vFOipxIADOuVtVVXwDqnz+Kuu6JmvtnXIIfCMBE0iVgAqkSMAFtiQgPbDGMAyGJeaJkJ54E+BxOXnvCwKitT7yaBazxDKcN66UGVQTJvM/V5ADqWSp5te3VHY2gU/hbduaLAJr4bKGC8TC4QJb4VCBlHCYQGq48AA3V6JWMCNO5gAAAABJRU5ErkJggg==" alt="arrow_right_img" />
+                </td>
+                <td class="col-value">Business or Self employed + 1 - 5 lacs + 36 Years</td>
+                <td class="col-score"><span class="score-pill">0.1</span></td>
+            </tr>
+            <tr class="factor-row">
+                <td class="col-name">
+                    <span class="bullet"></span>
+                    <span>Occupation/Activity</span>
+                </td>
+                <td class="col-weight">30%</td>
+                <td class="col-attr">Nature Of Business</td>
+                <td class="col-arrow">
+                    <img class="arrow_right_img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAXCAYAAABqBU3hAAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAADRSURBVHgB7ZRBDoIwEEWn9SIchS3hELonJNzAcgIXwNpbtFu9WOtMogQTKXXxqwveAgpt8l/SzCfa+TGKAIzjeOFXp5QyTdP0sbOaMHTyCCGYaZrOlFuAg/vFOipxIADOuVtVVXwDqnz+Kuu6JmvtnXIIfCMBE0iVgAqkSMAFtiQgPbDGMAyGJeaJkJ54E+BxOXnvCwKitT7yaBazxDKcN66UGVQTJvM/V5ADqWSp5te3VHY2gU/hbduaLAJr4bKGC8TC4QJb4VCBlHCYQGq48AA3V6JWMCNO5gAAAABJRU5ErkJggg==" alt="arrow_right_img" />
+                </td>
+                <td class="col-value">Gatekeeper service providers such as accountants, lawyers or other professionals who hold customers money where the identity of the underlying customers is not disclosed</td>
+                <td class="col-score"><span class="score-pill">3.0</span></td>
+            </tr>
+            <tr class="factor-row">
+                <td class="col-name">
+                    <span class="bullet"></span>
+                    <span>Products/Services</span>
+                </td>
+                <td class="col-weight">10%</td>
+                <td class="col-attr">Products</td>
+                <td class="col-arrow">
+                    <img class="arrow_right_img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAXCAYAAABqBU3hAAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAADRSURBVHgB7ZRBDoIwEEWn9SIchS3hELonJNzAcgIXwNpbtFu9WOtMogQTKXXxqwveAgpt8l/SzCfa+TGKAIzjeOFXp5QyTdP0sbOaMHTyCCGYaZrOlFuAg/vFOipxIADOuVtVVXwDqnz+Kuu6JmvtnXIIfCMBE0iVgAqkSMAFtiQgPbDGMAyGJeaJkJ54E+BxOXnvCwKitT7yaBazxDKcN66UGVQTJvM/V5ADqWSp5te3VHY2gU/hbduaLAJr4bKGC8TC4QJb4VCBlHCYQGq48AA3V6JWMCNO5gAAAABJRU5ErkJggg==" alt="arrow_right_img" />
+                </td>
+                <td class="col-value">Loan</td>
+                <td class="col-score"><span class="score-pill">0.5</span></td>
+            </tr>
+            <tr class="factor-row">
+                <td class="col-name">
+                    <span class="bullet"></span>
+                    <span>Sourcing</span>
+                </td>
+                <td class="col-weight">10%</td>
+                <td class="col-attr">Channel</td>
+                <td class="col-arrow">
+                    <img class="arrow_right_img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAXCAYAAABqBU3hAAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAADRSURBVHgB7ZRBDoIwEEWn9SIchS3hELonJNzAcgIXwNpbtFu9WOtMogQTKXXxqwveAgpt8l/SzCfa+TGKAIzjeOFXp5QyTdP0sbOaMHTyCCGYaZrOlFuAg/vFOipxIADOuVtVVXwDqnz+Kuu6JmvtnXIIfCMBE0iVgAqkSMAFtiQgPbDGMAyGJeaJkJ54E+BxOXnvCwKitT7yaBazxDKcN66UGVQTJvM/V5ADqWSp5te3VHY2gU/hbduaLAJr4bKGC8TC4QJb4VCBlHCYQGq48AA3V6JWMCNO5gAAAABJRU5ErkJggg==" alt="arrow_right_img" />
+                </td>
+                <td class="col-value">Direct</td>
+                <td class="col-score"><span class="score-pill">0.1</span></td>
+            </tr>
+            <tr class="factor-total">
+                <td class="col-name"><span style="margin-left: 11px;">Total</span></td>
+                <td class="col-weight">100%</td>
+                <td class="col-attr">Total <span class="label-light">(Score)</span></td>
+                <td class="col-arrow"></td>
+                <td class="col-value"></td>
+                <td class="col-score"><span class="score-pill">5.4</span></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="kyc-banner">KYC Factors</div>
+
+
+<!-- ============================ KYC SECTION ============================ -->
+
+<div class="kyc-full">
+    <div class="kyc-section-title"><span class="section-icon"></span>Geography</div>
+    <div class="kyc-field">
+        <span class="kyc-label">Country Of Birth/Tax Residency Country:</span>
+        <span class="kyc-value"> India</span>
+    </div>
+    <div class="kyc-field">
+        <span class="kyc-label">Permanent Address Country/Country Of Residence/Country Of Incorporation:</span>
+        <span class="kyc-value"> Iraq</span>
+    </div>
+    <div class="kyc-field">
+        <span class="kyc-label">Permanent Address/Registered Address:</span>
+        <span class="kyc-value"> Shree Bunglow, SV Road, Ashok Nagar, Kandivali, Mumbai, MH</span>
+    </div>
+    <div class="kyc-field">
+        <span class="kyc-label">Correspondence Address:</span>
+        <span class="kyc-value"> Om Galaxy, F101, MG Road, Shanti Nagar, Malad, Mumbai, MH</span>
+    </div>
+    <div class="kyc-field">
+        <span class="kyc-label">Correspondence Address State/Permanent Address State:</span>
+        <span class="kyc-value"> MH</span>
+    </div>
+</div>
+
+<div class="kyc-full">
+    <div class="kyc-section-title"><span class="section-icon"></span>Occupation/Activity</div>
+    <div class="kyc-field">
+        <span class="kyc-label">Occupation:</span>
+        <span class="kyc-value"> Business or Self employed</span>
+    </div>
+    <div class="kyc-field">
+        <span class="kyc-label">Nature Of Business:</span>
+        <span class="kyc-value"> Gatekeeper service providers such as accountants, lawyers or other professionals who hold customers money where the identity of the underlying customers is not disclosed</span>
+    </div>
+</div>
+
+<table class="kyc-grid">
+    <tr>
+        <td class="kyc-cell">
+            <div class="kyc-section-title alert"><span class="section-icon"></span>Adverse Reputation</div>
+            <div class="kyc-field">
+                <span class="kyc-label">AML Reg Special Category:</span>
+                <span class="kyc-value alert"> Politically Exposed person</span>
+            </div>
+            <div class="kyc-field">
+                <span class="kyc-label">Adverse Media Classifcation:</span>
+                <span class="kyc-value"> Financial crime, Organised crime</span>
+            </div>
+            <div class="kyc-field">
+                <span class="kyc-label">Adverse Reputation:</span>
+                <span class="kyc-value"> Yes</span>
+            </div>
+        </td>
+        <td class="kyc-cell">
+            <div class="kyc-section-title"><span class="section-icon"></span>Age</div>
+            <div class="kyc-field">
+                <span class="kyc-label">Age:</span>
+                <span class="kyc-value"> 36</span>
+            </div>
+        </td>
+        <td class="kyc-cell">
+            <div class="kyc-section-title"><span class="section-icon"></span>Constitution</div>
+            <div class="kyc-field">
+                <span class="kyc-label">Constitution Type:</span>
+                <span class="kyc-value"> Individual</span>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td class="kyc-cell">
+            <div class="kyc-section-title"><span class="section-icon"></span>Financial Size</div>
+            <div class="kyc-field">
+                <span class="kyc-label">Income Range:</span>
+                <span class="kyc-value"> 1 - 5 lacs</span>
+            </div>
+            <div class="kyc-field">
+                <span class="kyc-label">Exact Income:</span>
+                <span class="kyc-value"> 300000.74</span>
+            </div>
+            <div class="kyc-field">
+                <span class="kyc-label">Networth:</span>
+                <span class="kyc-value"> 1300000.23</span>
+            </div>
+        </td>
+        <td class="kyc-cell">
+            <div class="kyc-section-title alert"><span class="section-icon"></span>KYC Tags</div>
+            <div class="kyc-field">
+                <span class="kyc-label">Customer Tags:</span>
+                <span class="kyc-value alert"> IUGuarantor, STR</span>
+            </div>
+        </td>
+        <td class="kyc-cell">
+            <div class="kyc-section-title"><span class="section-icon"></span>Occupation+Income+Age</div>
+            <div class="kyc-field">
+                <span class="kyc-label">Occupation-Income-Age:</span>
+                <span class="kyc-value"> Business or Self employed + 1 - 5 lacs + 36yrs</span>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td class="kyc-cell">
+            <div class="kyc-section-title alert"><span class="section-icon"></span>Politically Exposed</div>
+            <div class="kyc-field">
+                <span class="kyc-label">PEP:</span>
+                <span class="kyc-value alert"> PEP</span>
+            </div>
+            <div class="kyc-field">
+                <span class="kyc-label">PEP Classifcation:</span>
+                <span class="kyc-value"> Foreign PEP, UBO / AP is domestic PEP</span>
+            </div>
+        </td>
+        <td class="kyc-cell">
+            <div class="kyc-section-title"><span class="section-icon"></span>Products/Services/Sourcing</div>
+            <div class="kyc-field">
+                <span class="kyc-label">Products:</span>
+                <span class="kyc-value"> Loan, Depository, Equities</span>
+            </div>
+        </td>
+        <td class="kyc-cell">
+            <div class="kyc-section-title"><span class="section-icon"></span>Sourcing</div>
+            <div class="kyc-field">
+                <span class="kyc-label">Channel:</span>
+                <span class="kyc-value"> Direct</span>
+            </div>
+            <div class="kyc-field">
+                <span class="kyc-label">Mode Of KYC:</span>
+                <span class="kyc-value"> Certifed Copies</span>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td class="kyc-cell">
+            <div class="kyc-section-title"><span class="section-icon"></span>Identification</div>
+            <div class="kyc-field">
+                <span class="kyc-label">PAN:</span>
+                <span class="kyc-value"> Available</span>
+            </div>
+            <div class="kyc-field">
+                <span class="kyc-label">DIN:</span>
+                <span class="kyc-value"> Available</span>
+            </div>
+            <div class="kyc-field">
+                <span class="kyc-label">CIN:</span>
+                <span class="kyc-value"> Available</span>
+            </div>
+        </td>
+        <td class="kyc-cell">&#160;</td>
+        <td class="kyc-cell">&#160;</td>
+    </tr>
+</table>
+
+<div class="risk-profile-bar">
+    <span class="label">Risk Profile:</span>
+    <span class="value"> Risk Profile 501</span>
+</div>
+
+
+<!-- ============================ CASE HISTORY ============================ -->
+
+<div class="case-banner">
+    <div class="case-banner-title">
+        <img class="case_history_img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAYAAADhAJiYAAAACXBIWXMAACE4AAAhOAFFljFgAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAARbSURBVHgBzVhNTiNHFH6v3AaUiRRnl4yR0pwgzhJmojEnGDgBcAKMMFF2NrsoeITnBNgnAE5gW0lsKRuYE+BIeJRlZ0EkaHe9vFfV7TGOf7oHxswnS13urp+vXr3fQkgIt9Bx+2l6TRpzpHReEWUIMCPfENT6dWW16RYamX56ccvxb8+71fVukvmduB2zB39sA+GWDzoPJKuT/LiJ/+sbpFJ5Iqr6zkJ1udgxJCEmZhLiCfOE+oRXdsEwEUmAR6TOUNElAf2DpLvy/rryoilPrVIsMbTvjiwZlprrLyy96v26Wp+2Hk76IGL3ncUSkyhE75jOuQJdva782IQYYKnmekcvLsP2ld0UVnuVtb1JY5wJZFwW9ylTyIWvWky98D6cPC4iMmZzJBIjF1mi08bgWDLphYbdjYD2epWXVXgEiB4yyVq0jjxHlR5HyGSYzIWQET1hbdicdTzZgz9zaf/GS2JNQ5v2br68W/fK6170TQ13NDoTSkYT7swiY3ZJ/oWZPAH6juOG6+Se/bv0evjbgJAx61CBWTqH79+sncWaWDA43niwG6U9ow4jVjes1KXw2WLzLcMnxiS9NISs07O7DBy1DXOE8XNAJVBYE2lZCRHshs/a37+sdmGOIAq2ATEP2vytq9D8jL9BVHWYMxCpZiya6F2m3Mg4bCFhbMJu5ObnidCSv47+K9RozI6D4Tv4DOAQkisNBGzCE+H5fnsDFB2Ll1YYWhcp6MITgbOGjOFBkGEJgUmulEYPnghp/67pp5Zq0o6doH1KhHFwR9pyZEYynIS58ABE0fuhcLQCj0llmFEm4Vhw+srzQxlz/nSVLbar6f7t26R5dLb4O8dQPCbEMzH7lnlL+D0kRLfKCRiyqNGmqxKcJfJnf+psJZiGc3P1yg4nVIDaZoGoN+AjIAlX72htBUEfGmJiLVrXJGWVOBVnDlJ0yGTqLJQafvNzx0319ZXhFJYx8JEwc/lBmYl9kBDHx3Rwdxj3GJUNptYpEulEoh6FzNV783KbM4aVaE7e5TYnfieTxkimMWwQNkFDqkeDH8NaDLHK2rrRLxOS9Pm4fjbjhBMxiOh48QPTNpcpEkawaSabAyLrEt0TPZR3gxQWKdixLcp/W2wXYA6QrFGOlzQM6rR7Vcfy/m9VNrxd++FhCj4NYTXs9cbUefeqDifol/lhOhHo07hmmwTZffFRwSkvcGHbUwixaXosws3Q0fGthm48L3ZK8EhYPmjvsr+rmdsSXiNIQ2u0z9ja3viTgBpWycWJ49mCf7uXNCREyB40ckCLx6Kf4bKXgYOb4/L3qZcN/ZRTjnTKgJ2c5N1xdWtQUQyImBXf3jz7ouyVfxib7iDMgC0gsRRJKxzVZbFf8nk3tYa/FOIgY+DM8yu5zEIMNqKLLDsGu2LJs6rhmYTuEdNc2WLiINwCpU5m3QslJhRB9MsJSAqDPGm9gojfcdESXumBp80FVqohl1mOj3yll6zO+w+bMhjGGkgTGgAAAABJRU5ErkJggg==" alt="case_history_img" />
+        <span>Case History</span>
+    </div>
+    <div class="case-entry">
+        <table>
+            <tr>
+                <td class="arrow-col">
+                    <img class="arrow_upper_img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAE8SURBVHgB7dg9bsJAEIbhGQe7Tp/GuUHaKJVvkiOkyR2QaDgCN4Ab+Apwg6VAoqTmR4vWYjDiR+zaM0wzbwXCeL9HQgIBYFm9QhDq47/+Aiim4XG+21ZuXDkQSAQQxqPPaw/4fjrFSSHYATfj25NEEKyAh+Pb09gRbICn49sTWREZMHT7mUcHHib0OiLO0MOmeeKh3OVFXf7VJTDUG3Bv/OENK0RYni/yfuEzqCQQvQCPxq+H3+762tXoZy6B6AxIGU9JIDoBuoynuBHJgD7jKU5EEoBjPMWFiAaEG3ONpzgQ0YD9oPjlHE/dQ4SzYt+fAMgmzRcU43iKEHT/5qzIBrEXngZ/glAB0eX+LD8lNDOAdgbQzgDaGUA7A2hnAO0MoJ0BtDOAdgbQzgDaGUA7McDlX5EpfxVa1os7Am4x6LHCV8+BAAAAAElFTkSuQmCC" alt="arrow_upper_img" />
+                </td>
+                <td class="case-info">
+                    <div class="case-date">Friday, 10 April 2026 at 05:06 PM</div>
+                    <div class="case-action">Case Assigned To sagark (Self)</div>
+                </td>
+                <td class="case-stage-col">
+                    <span class="stage-label">Stage</span>
+                </td>
+                <td class="case-stage-arrow-col">
+                    <img class="arrow_right_ch_img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAFRSURBVHgB7dgxUoNQEAbgfxWo7dPgCUxryQ30BjmCTWrHztIjeAOPQOU9KC2tE3R9+zAKscl7z5ndYr8mEDYz/z9AeAPgnHPOOT0EJe1d345Vs6nG3fPw1A3IdAYl+7rpGbiXTymDTGoFfk4+oy0poViAb4nxPm3ml1C7B8Rq+7qmT/RMuMCUZqj3uy7lnlAtIEpLqBcQJSVMFBC5JcwUEDklTBUQqSXMFRApJUwWEKeWWBQ4rE9gBdEVM9/87v8tUc3n5WkoT0VYwXy0Pz2xw9bl4aujpYTZK2pmmXFxBj7OqatG3sAKQriEMLuEaJCMyxGjVtt+TVyHJTd938RT+LfH62E+Z/Rv9LTw8RCMSQkfD8OQ1PBxBEbkhI9jMCA3fByFspLwcRyKSsPHn0DJf4QXFdQ0L2GlUxRe6L8XKggv1ApI6FDhoSS8c84557R9AV+46GQe1r0fAAAAAElFTkSuQmCC" alt="arrow_right_ch_img" />
+                </td>
+                <td class="case-stage-pill-col">
+                    <span class="stage-pill review">Under Review with maker</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="case-entry">
+        <table>
+            <tr>
+                <td class="arrow-col">
+                    <img class="arrow_upper_img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAE8SURBVHgB7dg9bsJAEIbhGQe7Tp/GuUHaKJVvkiOkyR2QaDgCN4Ab+Apwg6VAoqTmR4vWYjDiR+zaM0wzbwXCeL9HQgIBYFm9QhDq47/+Aiim4XG+21ZuXDkQSAQQxqPPaw/4fjrFSSHYATfj25NEEKyAh+Pb09gRbICn49sTWREZMHT7mUcHHib0OiLO0MOmeeKh3OVFXf7VJTDUG3Bv/OENK0RYni/yfuEzqCQQvQCPxq+H3+762tXoZy6B6AxIGU9JIDoBuoynuBHJgD7jKU5EEoBjPMWFiAaEG3ONpzgQ0YD9oPjlHE/dQ4SzYt+fAMgmzRcU43iKEHT/5qzIBrEXngZ/glAB0eX+LD8lNDOAdgbQzgDaGUA7A2hnAO0MoJ0BtDOAdgbQzgDaGUA7McDlX5EpfxVa1os7Am4x6LHCV8+BAAAAAElFTkSuQmCC" alt="arrow_upper_img" />
+                </td>
+                <td class="case-info">
+                    <div class="case-date">Friday, 10 April 2026 at 04:36 PM</div>
+                    <div class="case-action">Case Created</div>
+                </td>
+                <td class="case-stage-col">
+                    <span class="stage-label">Stage</span>
+                </td>
+                <td class="case-stage-arrow-col">
+                    <img class="arrow_right_ch_img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAFRSURBVHgB7dgxUoNQEAbgfxWo7dPgCUxryQ30BjmCTWrHztIjeAOPQOU9KC2tE3R9+zAKscl7z5ndYr8mEDYz/z9AeAPgnHPOOT0EJe1d345Vs6nG3fPw1A3IdAYl+7rpGbiXTymDTGoFfk4+oy0poViAb4nxPm3ml1C7B8Rq+7qmT/RMuMCUZqj3uy7lnlAtIEpLqBcQJSVMFBC5JcwUEDklTBUQqSXMFRApJUwWEKeWWBQ4rE9gBdEVM9/87v8tUc3n5WkoT0VYwXy0Pz2xw9bl4aujpYTZK2pmmXFxBj7OqatG3sAKQriEMLuEaJCMyxGjVtt+TVyHJTd938RT+LfH62E+Z/Rv9LTw8RCMSQkfD8OQ1PBxBEbkhI9jMCA3fByFspLwcRyKSsPHn0DJf4QXFdQ0L2GlUxRe6L8XKggv1ApI6FDhoSS8c84557R9AV+46GQe1r0fAAAAAElFTkSuQmCC" alt="arrow_right_ch_img" />
+                </td>
+                <td class="case-stage-pill-col">
+                    <span class="stage-pill open">Open</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>
